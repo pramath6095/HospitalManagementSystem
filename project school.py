@@ -7,8 +7,6 @@ cur=con.cursor()
 
 
 
-
-
 def admin_login():#print(' '*(50-len('')//2),
     print()
     print('='*100)
