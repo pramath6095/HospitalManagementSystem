@@ -10,7 +10,7 @@ cur=con.cursor()
 
 
 def admin_login():#print(' '*(50-len('')//2),
-    
+    print()
     print('='*100)
     print()
     print(' '*(50-len('ADMIN LOGIN')//2),'ADMIN LOGIN')
@@ -26,16 +26,20 @@ def admin_login():#print(' '*(50-len('')//2),
     data=cur.fetchall()
     for i in data:
         if i[0]==id and i[1]==pwd:
+            print()
             print('*'*100)
             print(' '*(50-len('login successful')//2),"Login Successful!")
             print('*'*100)
+            print()
             #admin_interface()
             break
     else:
+        print()
         print('*'*100)
         print(' '*(50-len('login failed')//2),"Login Failed!")
         print(' '*(50-len('Returning to Main Menu')//2),"Returning to Main Menu")
         print('*'*100)
+        print()
 
 def doctor_login():
     print('='*100)
@@ -53,20 +57,25 @@ def doctor_login():
     data=cur.fetchall()
     for i in data:
         if i[0]==id and i[1]==pwd:
+            print()
             print('*'*100)
             print(' '*(50-len('login successful')//2),"Login Successful!")
             print('*'*100)
+            print()
             #doctor_interface(id)
             break
     else:
+        print()
         print('*'*100)
         print(' '*(50-len('login failed!')//2),"Login Failed!")
         print(' '*(50-len('Returning to Main Menu')//2),"Returning to Main Menu")
         print('*'*100)
+        print()
     
 def user_page():
     while True:
 
+        print()
         print('='*100)
         print()
         print(' '*(50-len('USER (SIGNIN/LOGIN)')//2),'USER (SIGNIN/LOGIN)')
@@ -81,8 +90,8 @@ def user_page():
         try:
             ch=int(input())
             if ch==1:
-                #user_login()
-                pass
+                user_login()
+                break
             elif ch==2:
                 #user_signup()
                 pass
@@ -100,6 +109,42 @@ def user_page():
             print('*'*100)
             print(' '*(50-len('The choice has to be an integer!!!')//2),'THE CHOICE HAS TO BE AN INTEGER!!!')
             print('*'*100)
+            print()
+
+
+def user_login():
+    print()
+    print('='*100)
+    print()
+    print(' '*(50-len('USER LOGIN')//2),'USER LOGIN')
+    print()
+    print(' '*(50-len('Enter your credentials')//2),'Enter your Credentials')
+    print(' '*(50-len('Enter your credentials')//2),'ID : ',end='')
+    id=input()
+    print(' '*(50-len('Enter your credentials')//2),'PASSWORD : ',end='')
+    pwd=input()
+    print()
+    print('='*100)
+    print()
+    cur.execute("select * from user_login")
+    data=cur.fetchall()
+    for i in data:
+        if i[0]==id and i[1]==pwd:
+            print()
+            print('*'*100)
+            print(' '*(50-len('login successful')//2),"Login Successful!")
+            print('*'*100)
+            print()
+            #doctor_interface(id)
+            break
+    else:
+        print()
+        print('*'*100)
+        print(' '*(50-len('login failed!')//2),"Login Failed!")
+        print(' '*(50-len('Contact Admin to Recover Account')//2),"Contact Admin to Recover Account")
+        print(' '*(50-len('Returning to Main Menu')//2),"Returning to Main Menu")
+        print('*'*100)
+        print()
 
 
 
@@ -108,13 +153,10 @@ def user_page():
 
 
 
-
-
-            
 
 def menu_page():
     while True:
-
+        print()
         print('='*100)
         print()
 
@@ -160,11 +202,8 @@ def menu_page():
             print('*'*100)
             print(' '*(50-len('The choice has to be an integer!!!')//2),'THE CHOICE HAS TO BE AN INTEGER!!!')
             print('*'*100)
+            print()
             
-
-
-
-
 
 
 
@@ -182,6 +221,7 @@ def welcome_page():
     print(' '*(50-len('Enter your choice')//2),'Enter your choice')
     print()
     print('='*100)
+    
     while True:
         try:
             ch=int(input())
@@ -192,6 +232,7 @@ def welcome_page():
                 print('='*100)
                 print(' '*(50-len('THANK YOU!!!')//2),'THANK YOU!!!')
                 print('='*100)
+                print()
                 break
             else:
                 
@@ -209,6 +250,8 @@ def welcome_page():
             print(' '*(50-len('The choice has to be an integer!!!')//2),'THE CHOICE HAS TO BE AN INTEGER!!!')
             
             print('*'*100)
+            print()
+            
             welcome_page()
 
 
