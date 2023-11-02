@@ -57,6 +57,16 @@ def admin_edit():
                         print('*'*120)
                         print(' '*(60-len('NEW ADMIN USER CREATED!!!')//2),'NEW ADMIN USER CREATED!!!')
                         print('*'*120)
+
+                        #log report
+                        f=open('report.txt','a')
+                        temp=f"NEW ADMIN CREATED (ID : '{id}', PWD : '{pwd}')"
+                        f.write(temp)
+                        f.write('\n\n')
+                        f.close()
+                        # log report over
+
+
                         
             elif ch==2:
                 if len(data)>1:
@@ -89,12 +99,27 @@ def admin_edit():
                         print(' '*(60-len('SELECTED ADMIN CREDENTIALS DELETED')//2),'SELECTED ADMIN CREDENTIALS DELETED')
                         print('*'*120)
 
+                        #log report
+                        f=open('report.txt','a')
+                        temp=f"ADMIN DELETED (ID : '{id}')"
+                        f.write(temp)
+                        f.write('\n\n')
+                        f.close()
+                        #log report
+
                 else:
                     print()
                     print('*'*120)
                     print(' '*(60-len('DELETION FAILED')//2),'DELETION FAILED')
                     print(' '*(60-len('ATLEAST ONE ADMIN NEEDS TO BE PRESENT')//2),'ATLEAST ONE ADMIN NEEDS TO BE PRESENT')
                     print('*'*120)
+
+                    #log report
+                    f=open('report.txt','a')
+                    f.write("ADMIN DELETION ATTEMPT")
+                    f.write('\n\n')
+                    f.close()
+                    #log report
 
 
             elif ch==3:
@@ -133,6 +158,15 @@ def admin_edit():
                     print('*'*120)
                     print(' '*(60-len('PASSWORD CHANGED')//2),'PASSWORD CHANGED')
                     print('*'*120)
+
+                    #log report
+                    f=open('report.txt','a')
+                    temp=f"ADMIN PASSWORD CHANGED (ID : '{id}', PWD : '{pwd}')"
+
+                    f.write(temp)
+                    f.write('\n\n')
+                    f.close()
+                    #log report
                 
             elif ch==4:
                 break
@@ -184,6 +218,15 @@ def admin_interface():
                 print('*'*120)
                 print(' '*(60-len('LOGGED OUT')//2),'LOGGED OUT')
                 print('*'*120)
+
+                #log report
+                f=open('report.txt','a')
+                f.write('LOGOUT')
+                f.write('\n\n')
+                f.write('-'*50)
+                f.close()
+                #log report
+
                 break
             else:
                 print()
@@ -223,6 +266,18 @@ def admin_login():
             print(' '*(60-len('login successful')//2),"Login Successful!")
             print('*'*120)
             print()
+
+            #log report
+            f=open('report.txt','a')
+            f.write('\n\n')
+            f.write('-'*50)
+            f.write('\n\n')
+            temp='LOGIN BY : '+id
+            f.write(temp)
+            f.write('\n\n')
+            f.close()
+            #log report over
+
             admin_interface()
             break
     else:
