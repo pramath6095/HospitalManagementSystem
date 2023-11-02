@@ -1,5 +1,6 @@
 import mysql.connector
 import tabulate
+import time
 con=mysql.connector.connect(host='localhost',user='root',password='sql123',database='hospital')
 cur=con.cursor()
 def admin_edit():
@@ -59,8 +60,10 @@ def admin_edit():
                         print('*'*120)
 
                         #log report
+                        t = time.localtime()
+                        current_time = time.strftime("%H:%M:%S", t)
                         f=open('report.txt','a')
-                        temp=f"NEW ADMIN CREATED (ID : '{id}', PWD : '{pwd}')"
+                        temp='['+current_time+'] : '+f"ADMIN CREATED (ID : '{id}', PWD : '{pwd}')"
                         f.write(temp)
                         f.write('\n\n')
                         f.close()
@@ -100,8 +103,10 @@ def admin_edit():
                         print('*'*120)
 
                         #log report
+                        t = time.localtime()
+                        current_time = time.strftime("%H:%M:%S", t)
                         f=open('report.txt','a')
-                        temp=f"ADMIN DELETED (ID : '{id}')"
+                        temp='['+current_time+'] : '+f"ADMIN DELETED (ID : '{id}')"
                         f.write(temp)
                         f.write('\n\n')
                         f.close()
@@ -115,8 +120,11 @@ def admin_edit():
                     print('*'*120)
 
                     #log report
+                    t = time.localtime()
+                    current_time = time.strftime("%H:%M:%S", t)
                     f=open('report.txt','a')
-                    f.write("ADMIN DELETION ATTEMPT")
+                    temp='['+current_time+'] : '+"ADMIN DELETION ATTEMPT"
+                    f.write(temp)
                     f.write('\n\n')
                     f.close()
                     #log report
@@ -160,8 +168,10 @@ def admin_edit():
                     print('*'*120)
 
                     #log report
+                    t = time.localtime()
+                    current_time = time.strftime("%H:%M:%S", t)
                     f=open('report.txt','a')
-                    temp=f"ADMIN PASSWORD CHANGED (ID : '{id}', PWD : '{pwd}')"
+                    temp='['+current_time+'] : '+f"ADMIN PASSWORD CHANGED (ID : '{id}', PWD : '{pwd}')"
 
                     f.write(temp)
                     f.write('\n\n')
@@ -220,8 +230,11 @@ def admin_interface():
                 print('*'*120)
 
                 #log report
+                t = time.localtime()
+                current_time = time.strftime("%H:%M:%S", t)
                 f=open('report.txt','a')
-                f.write('LOGOUT')
+                temp='['+current_time+'] : '+'LOGOUT'
+                f.write(temp)
                 f.write('\n\n')
                 f.write('-'*50)
                 f.close()
@@ -268,11 +281,13 @@ def admin_login():
             print()
 
             #log report
+            t = time.localtime()
+            current_time = time.strftime("%H:%M:%S", t)
             f=open('report.txt','a')
             f.write('\n\n')
             f.write('-'*50)
             f.write('\n\n')
-            temp='LOGIN BY : '+id
+            temp='['+current_time+'] : '+'LOGIN BY : '+id
             f.write(temp)
             f.write('\n\n')
             f.close()
