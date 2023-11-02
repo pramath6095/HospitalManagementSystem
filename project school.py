@@ -1,15 +1,207 @@
 import mysql.connector
+import tabulate
 con=mysql.connector.connect(host='localhost',user='root',password='sql123',database='hospital')
 cur=con.cursor()
+def admin_edit():
+    while True:
+        print()
+        print('='*120)
+        print()
+        print(' '*(60-len('ADMIN CREDENTIALS')//2),'ADMIN CREDENTIALS')
+        print()
+        #print list of admin logins in tabular format
+        cur.execute('select * from admin_login')
+        data=cur.fetchall()
+        heading=['ID','PASSWORD']
+        print(tabulate.tabulate(data,headers=heading))
+        print(' '*(60-len('1. Edit Admin')//2),'1. Add Admin')
+        print(' '*(60-len('1. Edit Admin')//2),'2. Delete Admin')
+        print(' '*(60-len('1. Edit Admin')//2),'3. Password Change')
+        print(' '*(60-len('1. Edit Admin')//2),'4. Back')
+        print()
+        print(' '*(60-len('Enter your Choice')//2),'Enter your Choice')
+        print('='*120)
 
-#def admin_interface():
-#def doctor_interface(id):    
+        try:
+            ch=int(input())
+            if ch==1:
+                    c=0
+                    print()
+                    print('='*120)
+                    print()
+                    print(' '*(60-len('ADMIN CREATION')//2),'ADMIN CREATION')
+                    print()
+                    print(' '*(60-len('Enter new Credentials')//2),'Enter new Credentials')
+                    print(' '*(60-len('Enter new Credentials')//2),'ID : ',end='')
+                    id=input()
+                    print(' '*(60-len('Enter new Credentials')//2),'PASSWORD : ',end='')
+                    pwd=input()
+                    print()
+                    print('='*120)
+                    for i in data:
+                        if id==i[0]:
+                            c=1
+                    if c==1:
+                        print()
+                        print('*'*120)
+                        print(' '*(60-len('INVALID CHOICE')//2),'INVALID CHOICE')
+                        print(' '*(60-len('ID ENTERED ALREADY EXISTS!!')//2),'ID ENTERED ALREADY EXISTS!!')
+                        print('*'*120)
+                        print()
+                        
+                    else:
+                        cur.execute(f"insert into admin_login values('{id}','{pwd}')")
+                        con.commit()
+                        print(f"insert into admin_login values('{id}','{pwd}')")
+                        print()
+                        print('*'*120)
+                        print(' '*(60-len('NEW ADMIN USER CREATED!!!')//2),'NEW ADMIN USER CREATED!!!')
+                        print('*'*120)
+                        
+            elif ch==2:
+                if len(data)>1:
+                    c=0
+                    print()
+                    print('='*120)
+                    print()
+                    print(' '*(60-len('ADMIN DELETION')//2),'ADMIN DELETION')
+                    print()
+                    print(tabulate.tabulate(data,headers=heading))
+                    print()
+                    print(' '*(60-len('Enter Admin ID to be deleted : ')//2),'Enter Admin ID to be deleted : ',end='')
+                    id=input()
+                    for i in data:
+                        if id==i[0]:
+                            c=1
+                    if c==0:
+                        print()
+                        print('*'*120)
+                        print(' '*(60-len('INVALID CHOICE')//2),'INVALID CHOICE')
+                        print(' '*(60-len('ID ENTERED DOES NOT EXIST!!')//2),'ID ENTERED DOES NOT EXIST!!')
+                        print('*'*120)
+                        print()
+                    
+                    else:
+                        cur.execute(f"delete from admin_login where id='{id}'")
+                        con.commit()
+                        print()
+                        print('*'*120)
+                        print(' '*(60-len('SELECTED ADMIN CREDENTIALS DELETED')//2),'SELECTED ADMIN CREDENTIALS DELETED')
+                        print('*'*120)
+
+                else:
+                    print()
+                    print('*'*120)
+                    print(' '*(60-len('DELETION FAILED')//2),'DELETION FAILED')
+                    print(' '*(60-len('ATLEAST ONE ADMIN NEEDS TO BE PRESENT')//2),'ATLEAST ONE ADMIN NEEDS TO BE PRESENT')
+                    print('*'*120)
+
+
+            elif ch==3:
+                c=0
+                print()
+                print('='*120)
+                print()
+                print(' '*(60-len('PASSWORD CHANGE')//2),'PASSWORD CHANGE')
+                print()
+                print(tabulate.tabulate(data,headers=heading))
+                print()
+                print(' '*(60-len('Enter your credentials')//2),'Enter your Credentials')
+                print()
+                print(' '*(60-len('Enter your credentials')//2),'ID : ',end='')
+                id=input()
+                print(' '*(60-len('Enter your credentials')//2),'NEW PASSWORD : ',end='')
+                pwd=input()
+                print()
+                print('='*120)               
+                
+                for i in data:
+                    if id==i[0]:
+                        c=1
+                if c==0:
+                    print()
+                    print('*'*120)
+                    print(' '*(60-len('INVALID CHOICE')//2),'INVALID CHOICE')
+                    print(' '*(60-len('ID ENTERED DOES NOT EXIST!!')//2),'ID ENTERED DOES NOT EXIST!!')
+                    print('*'*120)
+                    print()
+                
+                else:
+                    cur.execute(f"update admin_login set password ='{pwd}' where id='{id}'")
+                    con.commit()
+                    print()
+                    print('*'*120)
+                    print(' '*(60-len('PASSWORD CHANGED')//2),'PASSWORD CHANGED')
+                    print('*'*120)
+                
+            elif ch==4:
+                break
+            else:
+                print()
+                print('*'*120)
+                print(' '*(60-len('INVALID CHOICE!!')//2),'INVALID CHOICE!!')
+                print('*'*120)
+                print()
+
+        except ValueError:
+            print()
+            print('*'*120)
+            print(' '*(60-len('The choice has to be an integer!!!')//2),'THE CHOICE HAS TO BE AN INTEGER!!!')
+            print('*'*120)
+            print()
+
+
+def admin_interface():
+    while True:
+        print()
+        print('='*120)
+        print()
+        print(' '*(60-len('ADMIN MODULE')//2),'ADMIN MODULE')
+        print()
+        print(' '*(60-len('1. Edit Admin')//2),'1. Edit Admin')
+        print(' '*(60-len('1. Edit Admin')//2),'2. Edit Doctors')
+        print(' '*(60-len('1. Edit Admin')//2),'3. Edit Users')
+        print(' '*(60-len('1. Edit Admin')//2),'4. Logout')
+        print()
+        print(' '*(60-len('Enter your Choice')//2),'Enter your Choice')
+        print('='*120)
+
+        try:
+            ch=int(input())
+            if ch==1:
+                admin_edit()
+                
+            elif ch==2:
+                #doctor_edit
+                pass
+                break
+            elif ch==3:
+                #user_edit
+                pass
+                break
+            elif ch==4:
+                print()
+                print('*'*120)
+                print(' '*(60-len('LOGGED OUT')//2),'LOGGED OUT')
+                print('*'*120)
+                break
+            else:
+                print()
+                print('*'*120)
+                print(' '*(60-len('INVALID CHOICE!!')//2),'INVALID CHOICE!!')
+                print('*'*120)
+                print()
+
+        except ValueError:
+            print()
+            print('*'*120)
+            print(' '*(60-len('The choice has to be an integer!!!')//2),'THE CHOICE HAS TO BE AN INTEGER!!!')
+            print('*'*120)
+            print()
 
 
 
-
-
-def admin_login():#print(' '*(60-len('')//2),
+def admin_login():
     print()
     print('='*120)
     print()
@@ -31,7 +223,7 @@ def admin_login():#print(' '*(60-len('')//2),
             print(' '*(60-len('login successful')//2),"Login Successful!")
             print('*'*120)
             print()
-            #admin_interface()
+            admin_interface()
             break
     else:
         print()
@@ -135,7 +327,7 @@ def user_login():
             print(' '*(60-len('login successful')//2),"Login Successful!")
             print('*'*120)
             print()
-            #doctor_interface(id)
+            #user_interface(id)
             break
     else:
         print()
@@ -145,13 +337,6 @@ def user_login():
         print(' '*(60-len('Returning to Main Menu')//2),"Returning to Main Menu")
         print('*'*120)
         print()
-
-
-
-
-
-
-
 
 
 def menu_page():
@@ -195,8 +380,6 @@ def menu_page():
                 print('*'*120)
                 print()
                 
-            
-
         except ValueError:
             print()
             print('*'*120)
@@ -204,9 +387,6 @@ def menu_page():
             print('*'*120)
             print()
             
-
-
-
 
 def welcome_page():
     while True:
@@ -221,8 +401,7 @@ def welcome_page():
         print(' '*(60-len('Enter your choice')//2),'Enter your choice')
         print()
         print('='*120)
-        
-        
+             
         try:
             ch=int(input())
             if ch==1:
@@ -237,7 +416,6 @@ def welcome_page():
                 break
             
             else:
-                
                 print()
                 print('*'*120)
                 print(' '*(60-len('INVALID CHOICE!!')//2),'INVALID CHOICE!!')
@@ -245,7 +423,6 @@ def welcome_page():
                 print()
                 #welcome_page()
             
-
         except ValueError:
             print()
             print('*'*120)
@@ -256,7 +433,4 @@ def welcome_page():
             
             #welcome_page()
         
-
-
-
 welcome_page()
