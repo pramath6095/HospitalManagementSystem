@@ -504,3 +504,22 @@ def welcome_page():
             #welcome_page()
         
 welcome_page()
+
+
+'''
+cur.execute('create table user_login(id varchar(100), password varchar(100)')
+cur.execute('create table doctor_login(id varchar(100), password varchar(100)')
+cur.execute('create table admin_login(id varchar(100), password varchar(100)')
+
+cur.execute("insert into admin_login values('admin','admin' )")
+
+cur.execute("insert into doctor_login values('d101','d101' )")
+cur.execute("insert into doctor_login values('d102','d102' )")
+cur.execute("insert into doctor_login values('d103','d103' )")
+
+cur.execute("insert into user_login values('u101','u101' )")
+cur.execute("insert into user_login values('u102','u102' )")
+cur.execute("insert into user_login values('u103','u103' )")
+con.commit()
+
+'''
