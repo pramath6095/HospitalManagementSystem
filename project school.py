@@ -307,6 +307,204 @@ def admin_login():
         print(' '*(60-len('Returning to Main Menu')//2),"Returning to Main Menu")
         print('*'*120)
         print()
+#---------------------------------------------------------------------------------------------------------------------------------------------------------
+def doctor_profile(id): #can be used in admin module also
+    while True:
+        q=f"select * from doctor_list where id='{id}'"
+        cur.execute(q)
+        data=cur.fetchone()
+        print(data)
+        print()
+        print('='*120)
+        print()
+        print(' '*(60-len('PROFILE')//2),'PROFILE')
+        print()
+        print(' '*(60-len('ID                    : d101')//2),'ID\t\t\t: ',data[0])
+        print(' '*(60-len('ID                    : d101')//2),'NAME\t\t\t: ',data[1])
+        print(' '*(60-len('ID                    : d101')//2),'SPECIALITY\t\t: ',data[2])
+        print(' '*(60-len('ID                    : d101')//2),'EXPERIENCE\t\t: ',data[3])
+        print(' '*(60-len('ID                    : d101')//2),'STATUS\t\t\t: ',data[4])
+        print()
+        print(' '*(60-len('ID                    : d101')//2),'-'*40)
+        print()
+        print(' '*(60-len('1. Update Name')//2),'1. Update Name')
+        print(' '*(60-len('1. Update Name')//2),'2. Update Speciality')
+        print(' '*(60-len('1. Update Name')//2),'3. Update Experience')
+        print(' '*(60-len('1. Update Name')//2),'4. Update Status')
+        print(' '*(60-len('1. Update Name')//2),'5. DELETE ACCOUNT')
+        print(' '*(60-len('1. Update Name')//2),'6. Back')
+        print()
+        print(' '*(60-len('Enter your Choice')//2),'Enter your Choice')
+        print('='*120)
+        try:
+            ch=int(input())
+            if ch==1:
+                print()
+                print('='*120)
+                print()
+                print(' '*(60-len('NAME CHANGE')//2),'NAME CHANGE')
+                print()
+                print(' '*(60-len('Enter new Name : ')//2),'Enter new Name : ',end='')
+                name=input()
+                print('='*120)
+                q=f'update doctor_list set name="{name}" where id="{id}"'
+                cur.execute(q)
+                con.commit()
+                print()
+                print('*'*120)
+                print(' '*(60-len('NAME CHANGED')//2),'NAME CHANGED')
+                print('*'*120)
+
+
+            elif ch==2:
+                print()
+                print('='*120)
+                print()
+                print(' '*(60-len('SPECIALITY UPDATE')//2),'SPECIALITY UPDATE')
+                print()
+                print(' '*(60-len('Enter Speciality(s) : ')//2),'Enter Speciality(s) : ',end='')
+                speciality=input()
+                print('='*120)
+                q=f'update doctor_list set speciality="{speciality}" where id="{id}"'
+                cur.execute(q)
+                con.commit()
+                print()
+                print('*'*120)
+                print(' '*(60-len('SPECIALITY UPDATED')//2),'SPECIALITY UPDATED')
+                print('*'*120)
+                
+                
+            elif ch==3:
+                print()
+                print('='*120)
+                print()
+                print(' '*(60-len('EXPERIENCE UPDATE')//2),'EXPERIENCE UPDATE')
+                print()
+                print(' '*(60-len('Enter Experience : ')//2),'Enter Experience : ',end='')
+                exp=int(input())
+                print('='*120)
+                q=f'update doctor_list set experience={exp} where id="{id}"'
+                cur.execute(q)
+                con.commit()
+                print()
+                print('*'*120)
+                print(' '*(60-len('EXPERIENCE UPDATED')//2),'EXPERIENCE UPDATED')
+                print('*'*120)
+
+                
+            elif ch==4:
+                while True:
+
+                    print()
+                    print('='*120)
+                    print()
+                    print(' '*(60-len('STATUS UPDATE')//2),'STATUS UPDATE')
+                    print()
+                    print(' '*(60-len('1. AVAILABLE')//2),'1. AVAILABLE')
+                    print(' '*(60-len('1. AVAILABLE')//2),'2. AWAY')
+                    print(' '*(60-len('1. AVAILABLE')//2),'3. BUSY')
+                    print(' '*(60-len('1. AVAILABLE')//2),'4. CUSTOM')
+                    print()
+                    print(' '*(60-len('Enter your Choice')//2),'Enter your Choice')
+                    print('='*120)
+
+                    try:
+                        ch=int(input())
+
+                        if ch==1:
+                            q=f"update doctor_list set status='available' where id='{id}'"
+                            cur.execute(q)
+                            con.commit()
+                            print()
+                            print('*'*120)
+                            print(' '*(60-len('STATUS UPDATED')//2),'STATUS UPDATED')
+                            print('*'*120)
+        
+                        elif ch==2:
+                            q=f"update doctor_list set status='away' where id='{id}'"
+                            cur.execute(q)
+                            con.commit()
+                            print()
+                            print('*'*120)
+                            print(' '*(60-len('STATUS UPDATED')//2),'STATUS UPDATED')
+                            print('*'*120)
+                        elif ch==3:
+                            q=f"update doctor_list set status='busy' where id='{id}'"
+                            cur.execute(q)
+                            con.commit()
+                            print()
+                            print('*'*120)
+                            print(' '*(60-len('STATUS UPDATED')//2),'STATUS UPDATED')
+                            print('*'*120)
+                        elif ch==4:
+                            print()
+                            print('='*120)
+                            print()
+                            print(' '*(60-len('Enter custom Status : ')//2),'Enter custom Status : ',end='')
+                            stat=input()
+                            print()
+                            print('='*120)
+                            q=f"update doctor_list set status='{stat}' where id='{id}'"
+                            cur.execute(q)
+                            con.commit()
+                            print()
+                            print('*'*120)
+                            print(' '*(60-len('STATUS UPDATED')//2),'STATUS UPDATED')
+                            print('*'*120)
+                            
+                        else:
+                            print()
+                            print('*'*120)
+                            print(' '*(60-len('INVALID CHOICE!!')//2),'INVALID CHOICE!!')
+                            print('*'*120)
+                            print()
+                        break
+                    except ValueError:
+                        print()
+                        print('*'*120)
+                        print(' '*(60-len('The choice has to be an integer!!!')//2),'THE CHOICE HAS TO BE AN INTEGER!!!')
+                        print('*'*120)
+                        print()
+
+            elif ch==5:
+                print()
+                print('='*120)
+                print()
+                print(' '*(60-len('ARE YOU SURE?')//2),'ARE YOU SURE?')
+                print(' '*(60-len('THIS PROCESS IS IRREVERSIBLE')//2),'THIS PROCESS IS IRREVERSIBLE')
+                print()
+                print(' '*(60-len('ENTER (Y/N) : ')//2),'ENTER (Y/N) : ',end='')
+                ch=input()
+                if ch in "Yy":
+                    q1=f"delete from doctor_login where id='{id}' "
+                    q2=f"delete from doctor_list where id='{id}' "
+                    q3="drop table "+id+"_patient_list"
+                    q4="drop table "+id+"_appointment_request"
+                    cur.execute(q1)
+                    cur.execute(q2)
+                    cur.execute(q3)
+                    cur.execute(q4)
+                    con.commit()
+                    print()
+                    print('*'*120)
+                    print(' '*(60-len('ACCOUNT DELETED SUCCESSFULLY')//2),'ACCOUNT DELETED SUCCESSFULLY')
+                    print('*'*120)
+                    break
+            elif ch==6: 
+                break
+            else:
+                print()
+                print('*'*120)
+                print(' '*(60-len('INVALID CHOICE!!')//2),'INVALID CHOICE!!')
+                print('*'*120)
+                print()
+
+        except ValueError:
+            print()
+            print('*'*120)
+            print(' '*(60-len('The choice has to be an integer!!!')//2),'THE CHOICE HAS TO BE AN INTEGER!!!')
+            print('*'*120)
+            print()    
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------
         
@@ -317,7 +515,11 @@ def doctor_interface(id):
         print()
         q=f'select doctor_list.name from doctor_list,doctor_login where doctor_list.id=doctor_login.id and doctor_list.id="{id}"; '
         cur.execute(q)
-        name=cur.fetchone()[0]
+        
+        data=cur.fetchone()
+        if data==None :# after deleting acount, needs to exit loop
+            break
+        name=data[0]
         
         head='DOCTOR '+name.upper()
 
@@ -333,32 +535,10 @@ def doctor_interface(id):
         try:
             ch=int(input())
             if ch==1:
-                q=f"select * from doctor_list where id='{id}'"
-                cur.execute(q)
-                data=cur.fetchone()
-                print(data)
-                print()
-                print('='*120)
-                print()
-                print(' '*(60-len('PROFILE')//2),'PROFILE')
-                print()
-                print(' '*(60-len('ID                    : d101')//2),'ID\t\t\t: ',data[0])
-                print(' '*(60-len('ID                    : d101')//2),'NAME\t\t\t: ',data[1])
-                print(' '*(60-len('ID                    : d101')//2),'SPECIALITY\t\t: ',data[2])
-                print(' '*(60-len('ID                    : d101')//2),'EXPERIENCE\t\t: ',data[3])
-                print(' '*(60-len('ID                    : d101')//2),'STATUS\t\t\t: ',data[4])
-                print()
-                print(' '*(60-len('ID                    : d101')//2),'-'*40)
-                print()
-                print(' '*(60-len('1. Sign In To Your Account')//2),'1. ')
-                print(' '*(60-len('1. Sign In To Your Account')//2),'2. ')
-                print(' '*(60-len('1. Sign In To Your Account')//2),'3. ')
-                print(' '*(60-len('Enter your Choice')//2),'Enter your Choice')
-                print('='*120)
-
+                doctor_profile(id)
+                
             elif ch==2:
-                pass
-    
+                pass# for doctor seeing patients
 
             elif ch==3:
                 print()
@@ -588,7 +768,6 @@ def welcome_page():
             #welcome_page()
 #---------------------------------------------------------------------------------------------------------------------------------------------------------
      
-welcome_page()
 
 
 '''
@@ -622,5 +801,18 @@ cur.execute('create table d102_patient_list(patient_id varchar(100), name varcha
 cur.execute('create table d103_patient_list(patient_id varchar(100), name varchar(100), notification varchar(100))')
 con.commit()
 
+cur.execute('create table d101_appointment_request(patient_id varchar(100), name varchar(100), message varchar(100))')
+cur.execute('create table d102_appointment_request(patient_id varchar(100), name varchar(100), message varchar(100))')
+cur.execute('create table d103_appointment_request(patient_id varchar(100), name varchar(100), message varchar(100))')
+'''
+
 
 '''
+#for account deleting checking
+cur.execute("insert into doctor_login values('d103','d103' )")
+cur.execute("insert into doctor_list values('d103','jeevith','eye',9,'away')")
+cur.execute('create table d103_patient_list(patient_id varchar(100), name varchar(100), notification varchar(100))')
+cur.execute('create table d103_appointment_request(patient_id varchar(100), name varchar(100), message varchar(100))')
+con.commit()
+'''
+welcome_page()
