@@ -3,6 +3,8 @@ import tabulate
 import time
 con=mysql.connector.connect(host='localhost',user='root',password='sql123',database='hospital')
 cur=con.cursor()
+
+#---------------------------------------------------------------------------------------------------------------------------------------------------------
 def admin_edit():
     while True:
         print()
@@ -15,6 +17,7 @@ def admin_edit():
         data=cur.fetchall()
         heading=['ID','PASSWORD']
         print(tabulate.tabulate(data,headers=heading))
+
         print(' '*(60-len('1. Edit Admin')//2),'1. Add Admin')
         print(' '*(60-len('1. Edit Admin')//2),'2. Delete Admin')
         print(' '*(60-len('1. Edit Admin')//2),'3. Password Change')
@@ -194,6 +197,8 @@ def admin_edit():
             print('*'*120)
             print()
 
+#---------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 def admin_interface():
     while True:
@@ -254,7 +259,7 @@ def admin_interface():
             print(' '*(60-len('The choice has to be an integer!!!')//2),'THE CHOICE HAS TO BE AN INTEGER!!!')
             print('*'*120)
             print()
-
+#---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 def admin_login():
@@ -303,6 +308,80 @@ def admin_login():
         print('*'*120)
         print()
 
+#---------------------------------------------------------------------------------------------------------------------------------------------------------
+        
+def doctor_interface(id):
+    while True:
+        print()
+        print('='*120)
+        print()
+        q=f'select doctor_list.name from doctor_list,doctor_login where doctor_list.id=doctor_login.id and doctor_list.id="{id}"; '
+        cur.execute(q)
+        name=cur.fetchone()[0]
+        
+        head='DOCTOR '+name.upper()
+
+        print(' '*(60-len(head)//2),head)
+        print()
+        print(' '*(60-len('1. Profile')//2),'1. Profile')
+        print(' '*(60-len('1. Profile')//2),'2. Patients')
+        print(' '*(60-len('1. Profile')//2),'3. Logout')
+        print()
+        print(' '*(60-len('Enter your Choice')//2),'Enter your Choice')
+        print('='*120)
+
+        try:
+            ch=int(input())
+            if ch==1:
+                q=f"select * from doctor_list where id='{id}'"
+                cur.execute(q)
+                data=cur.fetchone()
+                print(data)
+                print()
+                print('='*120)
+                print()
+                print(' '*(60-len('PROFILE')//2),'PROFILE')
+                print()
+                print(' '*(60-len('ID                    : d101')//2),'ID\t\t\t: ',data[0])
+                print(' '*(60-len('ID                    : d101')//2),'NAME\t\t\t: ',data[1])
+                print(' '*(60-len('ID                    : d101')//2),'SPECIALITY\t\t: ',data[2])
+                print(' '*(60-len('ID                    : d101')//2),'EXPERIENCE\t\t: ',data[3])
+                print(' '*(60-len('ID                    : d101')//2),'STATUS\t\t\t: ',data[4])
+                print()
+                print(' '*(60-len('ID                    : d101')//2),'-'*40)
+                print()
+                print(' '*(60-len('1. Sign In To Your Account')//2),'1. ')
+                print(' '*(60-len('1. Sign In To Your Account')//2),'2. ')
+                print(' '*(60-len('1. Sign In To Your Account')//2),'3. ')
+                print(' '*(60-len('Enter your Choice')//2),'Enter your Choice')
+                print('='*120)
+
+            elif ch==2:
+                pass
+    
+
+            elif ch==3:
+                print()
+                print('*'*120)
+                print(' '*(60-len('LOGGED OUT')//2),'LOGGED OUT')
+                print('*'*120)
+                break
+            else:
+                print()
+                print('*'*120)
+                print(' '*(60-len('INVALID CHOICE!!')//2),'INVALID CHOICE!!')
+                print('*'*120)
+                print()
+
+        except ValueError:
+            print()
+            print('*'*120)
+            print(' '*(60-len('The choice has to be an integer!!!')//2),'THE CHOICE HAS TO BE AN INTEGER!!!')
+            print('*'*120)
+            print()
+
+#---------------------------------------------------------------------------------------------------------------------------------------------------------
+
 def doctor_login():
     print('='*120)
     print()
@@ -324,7 +403,7 @@ def doctor_login():
             print(' '*(60-len('login successful')//2),"Login Successful!")
             print('*'*120)
             print()
-            #doctor_interface(id)
+            doctor_interface(id)
             break
     else:
         print()
@@ -333,6 +412,8 @@ def doctor_login():
         print(' '*(60-len('Returning to Main Menu')//2),"Returning to Main Menu")
         print('*'*120)
         print()
+
+#---------------------------------------------------------------------------------------------------------------------------------------------------------
     
 def user_page():
     while True:
@@ -373,6 +454,7 @@ def user_page():
             print('*'*120)
             print()
 
+#---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def user_login():
     print()
@@ -408,6 +490,7 @@ def user_login():
         print('*'*120)
         print()
 
+#---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def menu_page():
     while True:
@@ -456,7 +539,8 @@ def menu_page():
             print(' '*(60-len('The choice has to be an integer!!!')//2),'THE CHOICE HAS TO BE AN INTEGER!!!')
             print('*'*120)
             print()
-            
+
+#---------------------------------------------------------------------------------------------------------------------------------------------------------         
 
 def welcome_page():
     while True:
@@ -502,7 +586,8 @@ def welcome_page():
             print()
             
             #welcome_page()
-        
+#---------------------------------------------------------------------------------------------------------------------------------------------------------
+     
 welcome_page()
 
 
@@ -510,16 +595,32 @@ welcome_page()
 cur.execute('create table user_login(id varchar(100), password varchar(100)')
 cur.execute('create table doctor_login(id varchar(100), password varchar(100)')
 cur.execute('create table admin_login(id varchar(100), password varchar(100)')
-
+con.commit()
 cur.execute("insert into admin_login values('admin','admin' )")
 
 cur.execute("insert into doctor_login values('d101','d101' )")
 cur.execute("insert into doctor_login values('d102','d102' )")
 cur.execute("insert into doctor_login values('d103','d103' )")
+con.commit()
 
 cur.execute("insert into user_login values('u101','u101' )")
 cur.execute("insert into user_login values('u102','u102' )")
 cur.execute("insert into user_login values('u103','u103' )")
+cur.execute("insert into user_login values('u104','u104' )")
+cur.execute("insert into user_login values('u105','u105' )")
 con.commit()
+
+cur.execute('create table doctor_list(id varchar(100), name varchar(100), speciality varchar(100), experience int, status varchar(100)')
+cur.execute("insert into doctor_list values('d101','dyan','heart',10,'available')") 
+#status---available,busy,away
+cur.execute("insert into doctor_list values('d102','nishanth','brain',8,'busy')")
+cur.execute("insert into doctor_list values('d103','jeevith','eye',9,'away')")
+con.commit()
+
+cur.execute('create table d101_patient_list(patient_id varchar(100), name varchar(100), notification varchar(100))')
+cur.execute('create table d102_patient_list(patient_id varchar(100), name varchar(100), notification varchar(100))')
+cur.execute('create table d103_patient_list(patient_id varchar(100), name varchar(100), notification varchar(100))')
+con.commit()
+
 
 '''
