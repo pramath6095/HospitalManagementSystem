@@ -760,8 +760,9 @@ def user_profile(id):
         print(' '*(60-len('1. Update First Name')//2),'4. Update Age')
         print(' '*(60-len('1. Update First Name')//2),'5. Update Job')
         print(' '*(60-len('1. Update First Name')//2),'6. Update Marital Status')
-        print(' '*(60-len('1. Update First Name')//2),'7. DELETE ACCOUNT')
-        print(' '*(60-len('1. Update First Name')//2),'8. Back')
+        print(' '*(60-len('1. Update First Name')//2),'7. CHANGE PASSWORD')
+        print(' '*(60-len('1. Update First Name')//2),'8. DELETE ACCOUNT')
+        print(' '*(60-len('1. Update First Name')//2),'9. Back')
         print()
         print(' '*(60-len('Enter your Choice')//2),'Enter your Choice')
         print()
@@ -903,7 +904,7 @@ def user_profile(id):
                     print(' '*(60-len('MARITAL STATUS UPDATED')//2),'MARITAL STATUS UPDATED')
                     print('*'*120)
     
-            elif ch==7:
+            elif ch==8:
                 print()
                 print('='*120)
                 print()
@@ -933,8 +934,25 @@ def user_profile(id):
                     print(' '*(60-len('ACCOUNT DELETED SUCCESSFULLY')//2),'ACCOUNT DELETED SUCCESSFULLY')
                     print('*'*120)
                     break
-            elif ch==8:
+            elif ch==7:
+                print()
+                print('='*120)
+                print()
+                print(' '*(60-len('PASSWORD CHANGE')//2),'PASSWORD CHANGE')
+                print()
+                print(' '*(60-len('Enter New Password : ')//2),'Enter New Password : ',end='')
+                PWD=input()
+                print('='*120)
+                q=f'update user_login set password="{PWD}" where id="{id}"'
+                cur.execute(q)
+                con.commit()
+                print()
+                print('*'*120)
+                print(' '*(60-len('PASSWORD CHANGED')//2),'PASSWORD CHANGED')
+                print('*'*120)
+            elif ch==9:
                 break
+                
             else:
                 print()
                 print('*'*120)
