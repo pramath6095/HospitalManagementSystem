@@ -24,10 +24,11 @@ def admin_edit():
         print(' '*(60-len('1. Edit Admin')//2),'4. Back')
         print()
         print(' '*(60-len('Enter your Choice')//2),'Enter your Choice')
+        print()
         print('='*120)
 
         try:
-            ch=int(input())
+            ch=int(input('-->'))
             if ch==1:
                     c=0
                     print()
@@ -52,7 +53,7 @@ def admin_edit():
                         print(' '*(60-len('ID ENTERED ALREADY EXISTS!!')//2),'ID ENTERED ALREADY EXISTS!!')
                         print('*'*120)
                         print()
-                        
+                       
                     else:
                         cur.execute(f"insert into admin_login values('{id}','{pwd}')")
                         con.commit()
@@ -73,7 +74,7 @@ def admin_edit():
                         # log report over
 
 
-                        
+                       
             elif ch==2:
                 if len(data)>1:
                     c=0
@@ -96,7 +97,7 @@ def admin_edit():
                         print(' '*(60-len('ID ENTERED DOES NOT EXIST!!')//2),'ID ENTERED DOES NOT EXIST!!')
                         print('*'*120)
                         print()
-                    
+                   
                     else:
                         cur.execute(f"delete from admin_login where id='{id}'")
                         con.commit()
@@ -149,8 +150,8 @@ def admin_edit():
                 print(' '*(60-len('Enter your credentials')//2),'NEW PASSWORD : ',end='')
                 pwd=input()
                 print()
-                print('='*120)               
-                
+                print('='*120)              
+               
                 for i in data:
                     if id==i[0]:
                         c=1
@@ -161,7 +162,7 @@ def admin_edit():
                     print(' '*(60-len('ID ENTERED DOES NOT EXIST!!')//2),'ID ENTERED DOES NOT EXIST!!')
                     print('*'*120)
                     print()
-                
+               
                 else:
                     cur.execute(f"update admin_login set password ='{pwd}' where id='{id}'")
                     con.commit()
@@ -180,7 +181,7 @@ def admin_edit():
                     f.write('\n\n')
                     f.close()
                     #log report
-                
+               
             elif ch==4:
                 break
             else:
@@ -213,17 +214,56 @@ def admin_interface():
         print(' '*(60-len('1. Edit Admin')//2),'4. Logout')
         print()
         print(' '*(60-len('Enter your Choice')//2),'Enter your Choice')
+        print()
         print('='*120)
 
         try:
-            ch=int(input())
+            ch=int(input('-->'))
             if ch==1:
                 admin_edit()
-                
+               
             elif ch==2:
-                #doctor_edit
-                pass
-                break
+                #log report
+                t = time.localtime()
+                current_time = time.strftime("%H:%M:%S", t)
+                f=open('report.txt','a')
+                temp='['+current_time+'] : '+'DOCTOR EDITING'
+                f.write(temp)
+                f.write('\n\n')
+                f.close()
+                #log report
+               
+                print()
+                print('='*120)
+                print()
+                print(' '*(60-len('DOCTOR CREDENTIALS')//2),'DOCTOR CREDENTIALS')
+                print()
+                q="select * from doctor_list"
+                cur.execute(q)
+                data=cur.fetchall()
+                heading=['id','name','speciality','experience','status']
+                print(tabulate.tabulate(data,headers=heading))
+                print()
+                print(' '*(60-len('Enter id to be edited : ')//2),'Enter id to be edited : ',end='')
+                id=input()
+                print()
+                print('='*120)
+               
+                q=f"select id from doctor_list where id='{id}'"
+                cur.execute(q)
+                data=cur.fetchone()
+                if data==None:
+                    print()
+                    print('*'*120)
+                    print(' '*(60-len('INVALID CHOICE!!')//2),'INVALID CHOICE!!')
+                    print('*'*120)
+                    print()
+               
+                else:
+                    doctor_profile(id)
+                       
+
+                     
             elif ch==3:
                 #user_edit
                 pass
@@ -313,7 +353,6 @@ def doctor_profile(id): #can be used in admin module also
         q=f"select * from doctor_list where id='{id}'"
         cur.execute(q)
         data=cur.fetchone()
-        print(data)
         print()
         print('='*120)
         print()
@@ -335,9 +374,10 @@ def doctor_profile(id): #can be used in admin module also
         print(' '*(60-len('1. Update Name')//2),'6. Back')
         print()
         print(' '*(60-len('Enter your Choice')//2),'Enter your Choice')
+        print()
         print('='*120)
         try:
-            ch=int(input())
+            ch=int(input('-->'))
             if ch==1:
                 print()
                 print('='*120)
@@ -372,8 +412,8 @@ def doctor_profile(id): #can be used in admin module also
                 print('*'*120)
                 print(' '*(60-len('SPECIALITY UPDATED')//2),'SPECIALITY UPDATED')
                 print('*'*120)
-                
-                
+               
+               
             elif ch==3:
                 print()
                 print('='*120)
@@ -391,7 +431,7 @@ def doctor_profile(id): #can be used in admin module also
                 print(' '*(60-len('EXPERIENCE UPDATED')//2),'EXPERIENCE UPDATED')
                 print('*'*120)
 
-                
+               
             elif ch==4:
                 while True:
 
@@ -406,10 +446,11 @@ def doctor_profile(id): #can be used in admin module also
                     print(' '*(60-len('1. AVAILABLE')//2),'4. CUSTOM')
                     print()
                     print(' '*(60-len('Enter your Choice')//2),'Enter your Choice')
+                    print()
                     print('='*120)
 
                     try:
-                        ch=int(input())
+                        ch=int(input('-->'))
 
                         if ch==1:
                             q=f"update doctor_list set status='available' where id='{id}'"
@@ -419,7 +460,7 @@ def doctor_profile(id): #can be used in admin module also
                             print('*'*120)
                             print(' '*(60-len('STATUS UPDATED')//2),'STATUS UPDATED')
                             print('*'*120)
-        
+       
                         elif ch==2:
                             q=f"update doctor_list set status='away' where id='{id}'"
                             cur.execute(q)
@@ -451,7 +492,7 @@ def doctor_profile(id): #can be used in admin module also
                             print('*'*120)
                             print(' '*(60-len('STATUS UPDATED')//2),'STATUS UPDATED')
                             print('*'*120)
-                            
+                           
                         else:
                             print()
                             print('*'*120)
@@ -490,7 +531,7 @@ def doctor_profile(id): #can be used in admin module also
                     print(' '*(60-len('ACCOUNT DELETED SUCCESSFULLY')//2),'ACCOUNT DELETED SUCCESSFULLY')
                     print('*'*120)
                     break
-            elif ch==6: 
+            elif ch==6:
                 break
             else:
                 print()
@@ -507,7 +548,7 @@ def doctor_profile(id): #can be used in admin module also
             print()    
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------
-        
+       
 def doctor_interface(id):
     while True:
         print()
@@ -515,12 +556,12 @@ def doctor_interface(id):
         print()
         q=f'select doctor_list.name from doctor_list,doctor_login where doctor_list.id=doctor_login.id and doctor_list.id="{id}"; '
         cur.execute(q)
-        
+       
         data=cur.fetchone()
         if data==None :# after deleting acount, needs to exit loop
             break
         name=data[0]
-        
+       
         head='DOCTOR '+name.upper()
 
         print(' '*(60-len(head)//2),head)
@@ -530,13 +571,14 @@ def doctor_interface(id):
         print(' '*(60-len('1. Profile')//2),'3. Logout')
         print()
         print(' '*(60-len('Enter your Choice')//2),'Enter your Choice')
+        print()
         print('='*120)
 
         try:
-            ch=int(input())
+            ch=int(input('-->'))
             if ch==1:
                 doctor_profile(id)
-                
+               
             elif ch==2:
                 pass# for doctor seeing patients
 
@@ -594,7 +636,383 @@ def doctor_login():
         print()
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------
+def user_signup():
+
+    print()
+    print('='*120)
+    print()
+    print(' '*(60-len('USER SIGNIN')//2),'USER SIGNIN')
+    print()
+    print(' '*(60-len('Enter First Name : ')//2),'Enter First Name : ',end='')
+    fname=input()
+    print()
+    print(' '*(60-len('Enter First Name : ')//2),'Enter Last Name : ',end='')
+    lname=input()
+    print()
+    while True:
+        print(' '*(60-len('Enter Sex(M/F) : ')//2),'Enter Sex(M/F) : ',end='')
+        sex=input()
+        sex=sex.lower()
+        if sex not in'mf':
+            print()
+            print('*'*120)
+            print(' '*(60-len('INVALID SEX!')//2),"INVALID SEX!")
+            print('*'*120)
+            print()
+        else:
+            break
+   
+    try:
+        print()
+        print(' '*(60-len('Enter Age : ')//2),'Enter Age : ',end='')
+        age=int(input())
+        print()
+    except ValueError:
+        print()
+        print('*'*120)
+        print(' '*(60-len('The choice has to be an integer!!!')//2),'THE CHOICE HAS TO BE AN INTEGER!!!')
+        print('*'*120)
+        print()
+       
+   
+    print(' '*(60-len('Enter Occupation : ')//2),'Enter Occupation : ',end='')
+    job=input()
+    print()
+
+    while True:
+       
+        print(' '*(60-len('Enter Marital status(m/nm) : ')//2),'Enter Marital status(m/nm) : ',end='')
+        m_status=input()
+        m_status=m_status.lower()
+       
+        if m_status != 'nm' and m_status!='m':
+            print()
+            print('*'*120)
+            print(' '*(60-len('INVALID INPUT')//2),"INVALID INPUT")
+            print('*'*120)
+            print()
+        else:
+            break        
+        print()
+    id=''
+    print()
+    print(' '*(60-len('Enter Password : ')//2),'Enter Password : ',end='')
+    pwd=input()
+    print()
+    print('='*120)
+   
+    #+lname[0:2]+str(age)
+    try:
+        id+=fname[0:2]
+       
+    except Exception:
+        id+=fname
+       
+    try:
+        id+=lname[0:2]
+       
+    except Exception:
+        id+=lname
+       
+    id+=str(age)
+    notif='none'
+    q=f"insert into patient_list values('{id}','{fname}','{lname}','{sex}',{age},'{job}','{m_status}','{notif}')"
+   
+    cur.execute(q)
+    q=f'insert into user_login values("{id}","{pwd}")'
+    cur.execute(q)
+    con.commit()
+    print()
+    print('*'*120)
+    print(' '*(60-len('Account Created Successfully')//2),"Account Created Successfully")
+    print('*'*120)
+    print()
+   
+    user_interface(id)
+#---------------------------------------------------------------------------------------------------------------------------------------------------------              
+def user_profile(id):
+    while True:
+        q=f"select id,fname,lname,sex,age,job,marital_status from patient_list where id='{id}' "
+        cur.execute(q)
+        data=cur.fetchall()
+        
+        '''
+        fname=data[0]
+        lname=data[1]
+        sex=data[2]
+        age=data[3]
+        job=data[4]
+        marital_status=data[5]'''
+
+        heading=['id','fname','lname','sex','age','job','marital_status']
+
     
+        print()
+        print('='*120)
+        print()
+        print(' '*(60-len('PROFILE')//2),'PROFILE')
+        print()
+        print(tabulate.tabulate(data,headers=heading))
+        print()
+        print(' '*(60-len('1. Update First Name')//2),'1. Update First Name')
+        print(' '*(60-len('1. Update First Name')//2),'2. Update Last Name')
+        print(' '*(60-len('1. Update First Name')//2),'3. Update Sex')
+        print(' '*(60-len('1. Update First Name')//2),'4. Update Age')
+        print(' '*(60-len('1. Update First Name')//2),'5. Update Job')
+        print(' '*(60-len('1. Update First Name')//2),'6. Update Marital Status')
+        print(' '*(60-len('1. Update First Name')//2),'7. DELETE ACCOUNT')
+        print(' '*(60-len('1. Update First Name')//2),'8. Back')
+        print()
+        print(' '*(60-len('Enter your Choice')//2),'Enter your Choice')
+        print()
+        print('='*120)
+
+        
+
+        try:
+            ch=int(input('-->'))
+            if ch==1:
+                print()
+                print('='*120)
+                print()
+                print(' '*(60-len('FIRST-NAME UPDATE')//2),'FIRST-NAME UPDATE')
+                print()
+                print(' '*(60-len('Enter First Name : ')//2),'Enter First Name : ',end='')
+                fname=input()
+                print('='*120)
+                q=f'update patient_list set fname="{fname}" where id="{id}"'
+                cur.execute(q)
+                con.commit()
+                print()
+                print('*'*120)
+                print(' '*(60-len('FIRST-NAME UPDATED')//2),'FIRST-NAME UPDATED')
+                print('*'*120)
+
+            elif ch==2:
+                print()
+                print('='*120)
+                print()
+                print(' '*(60-len('LAST-NAME UPDATE')//2),'LAST-NAME UPDATE')
+                print()
+                print(' '*(60-len('Enter Last Name : ')//2),'Enter Last Name : ',end='')
+                lname=input()
+                print('='*120)
+                q=f'update patient_list set lname="{lname}" where id="{id}"'
+                cur.execute(q)
+                con.commit()
+                print()
+                print('*'*120)
+                print(' '*(60-len('LAST-NAME UPDATED')//2),'LAST-NAME UPDATED')
+                print('*'*120)
+
+
+            elif ch==3:
+                print()
+                print('='*120)
+                print()
+                print(' '*(60-len('SEX UPDATE')//2),'SEX UPDATE')
+                print()
+                print(' '*(60-len('Enter Sex : ')//2),'Enter Sex : ',end='')
+                print(' '*(60-len('Enter First Name : ')//2),'Enter Sex(M/F) : ',end='')
+                sex=input()
+                sex=sex.lower()
+                if sex not in'mf':
+                    print()
+                    print('*'*120)
+                    print(' '*(60-len('INVALID SEX!')//2),"INVALID SEX!")
+                    print('*'*120)
+                    print()
+                else:
+                    print('='*120)
+                    q=f'update patient_list set sex="{sex}" where id="{id}"'
+                    cur.execute(q)
+                    con.commit()
+                    print()
+                    print('*'*120)
+                    print(' '*(60-len('SEX UPDATED')//2),'SEX UPDATED')
+                    print('*'*120)
+
+            elif ch==4:
+                print()
+                print('='*120)
+                print()
+                print(' '*(60-len('AGE UPDATE')//2),'AGE UPDATE')
+                print()
+                print(' '*(60-len('Enter Age : ')//2),'Enter Age : ',end='')
+                try:
+                    age=int(input())
+                    print('='*120)
+                    q=f'update patient_list set age={age} where id="{id}"'
+                    cur.execute(q)
+                    con.commit()
+                    print()
+                    print('*'*120)
+                    print(' '*(60-len('AGE UPDATED')//2),'AGE UPDATED')
+                    print('*'*120)
+                except ValueError:
+                    print()
+                    print('*'*120)
+                    print(' '*(60-len('AGE HAS TO BE AN INTEGER!!!')//2),'AGE HAS TO BE AN INTEGER!!!')
+                    print('*'*120)
+                    print()
+
+               
+            elif ch==5:
+                print()
+                print('='*120)
+                print()
+                print(' '*(60-len('JOB UPDATE')//2),'JOB UPDATE')
+                print()
+                print(' '*(60-len('Enter Job : ')//2),'Enter Job : ',end='')
+                job=input()
+                print('='*120)
+                q=f'update patient_list set job="{job}" where id="{id}"'
+                cur.execute(q)
+                con.commit()
+                print()
+                print('*'*120)
+                print(' '*(60-len('JOB UPDATED')//2),'JOB UPDATED')
+                print('*'*120)
+                
+            elif ch==6:
+                print()
+                print('='*120)
+                print()
+                print(' '*(60-len('MARITAL STATUS UPDATE')//2),'MARITAL STATUS UPDATE')
+                print()
+                
+       
+                print(' '*(60-len('Enter Marital Status(m/nm) : ')//2),'Enter Marital Status(m/nm) : ',end='')
+                m_status=input()
+                m_status=m_status.lower()
+    
+                if m_status != 'nm' and m_status!='m':
+                    print()
+                    print('*'*120)
+                    print(' '*(60-len('INVALID INPUT')//2),"INVALID INPUT")
+                    print('*'*120)
+                    print()
+                else:
+    
+                    print('='*120)
+                    q=f'update patient_list set marital_status="{m_status}" where id="{id}"'
+                    cur.execute(q)
+                    con.commit()
+                    print()
+                    print('*'*120)
+                    print(' '*(60-len('MARITAL STATUS UPDATED')//2),'MARITAL STATUS UPDATED')
+                    print('*'*120)
+    
+            elif ch==7:
+                print()
+                print('='*120)
+                print()
+                print(' '*(60-len('ARE YOU SURE?')//2),'ARE YOU SURE?')
+                print(' '*(60-len('THIS PROCESS IS IRREVERSIBLE')//2),'THIS PROCESS IS IRREVERSIBLE')
+                print()
+                print(' '*(60-len('ENTER (Y/N) ')//2),'ENTER (Y/N) ',end='')
+                ch=input('-->')
+                if ch in "Yy":
+                    q1=f"delete from user_login where id='{id}' "
+                    q2=f"delete from patient_list where id='{id}' "
+                    
+                    cur.execute("select id from doctor_login")
+                    doctor_id_list=cur.fetchall()
+                    for i in doctor_id_list:
+                        table_name=i[0]+'_patient_list'
+                        q=f"delete from '{table_name}' where patient_id='{id}'"
+                        table_name=i[0]+'_appointment_request'
+                        q=f"delete from '{table_name}' where patient_id='{id}'"
+                        
+                    cur.execute(q1)
+                    cur.execute(q2)
+                    
+                    con.commit()
+                    print()
+                    print('*'*120)
+                    print(' '*(60-len('ACCOUNT DELETED SUCCESSFULLY')//2),'ACCOUNT DELETED SUCCESSFULLY')
+                    print('*'*120)
+                    break
+            elif ch==8:
+                break
+            else:
+                print()
+                print('*'*120)
+                print(' '*(60-len('INVALID CHOICE!!')//2),'INVALID CHOICE!!')
+                print('*'*120)
+                print()
+        except ValueError:
+            print()
+            print('*'*120)
+            print(' '*(60-len('The choice has to be an integer!!!')//2),'THE CHOICE HAS TO BE AN INTEGER!!!')
+            print('*'*120)
+            print()
+
+
+#https://ctxt.io/2/AADQEHIeEw     ---------------------------------------------------------------------------------------------------------------------------------------------------------          
+
+def user_interface(id):
+    while True:
+        q=f"select notifications from patient_list where id='{id}' "
+        cur.execute(q)
+        data=cur.fetchone()
+        if data==None:
+            break
+        data=data[0]
+        if data=='none':
+            notif="NO NOTIFICATIONS"
+        else:
+            notif=data
+        print()
+        print('='*120)
+        print()
+        heading=id.upper()
+        print(' '*(60-len(heading)//2),heading)
+        print()
+
+        #center allign the notif
+    
+        print('NOTIFICATIONS : ',notif)
+        print()
+        print(' '*(60-len('1. Profile')//2),'1. Profile')
+        print(' '*(60-len('1. Profile')//2),'2. Set Appointment')
+        print(' '*(60-len('1. Profile')//2),'3. Exit to Main Menu')
+        print()
+        print(' '*(60-len('Enter your Choice')//2),'Enter your Choice')
+        print()
+        print('='*120)
+
+    
+        try:
+       
+            ch=int(input('-->'))
+            if ch==1:
+                user_profile(id)
+
+            elif ch==2:
+                #set_appointment(id)
+                pass
+
+            elif ch==3:
+                break
+               
+            elif ch==4:
+                pass
+            else:
+                print()
+                print('*'*120)
+                print(' '*(60-len('INVALID CHOICE!!')//2),'INVALID CHOICE!!')
+                print('*'*120)
+                print()
+
+        except ValueError:
+            print()
+            print('*'*120)
+            print(' '*(60-len('The choice has to be an integer!!!')//2),'THE CHOICE HAS TO BE AN INTEGER!!!')
+            print('*'*120)
+            print()
+       
+#---------------------------------------------------------------------------------------------------------------------------------------------------------  
 def user_page():
     while True:
 
@@ -608,16 +1026,17 @@ def user_page():
         print(' '*(60-len('1. Sign In To Your Account')//2),'3. Exit to Main Menu')
         print()
         print(' '*(60-len('Enter your Choice')//2),'Enter your Choice')
+        print()
         print('='*120)
 
         try:
-            ch=int(input())
+            ch=int(input('-->'))
             if ch==1:
                 user_login()
                 break
             elif ch==2:
-                #user_signup()
-                pass
+                user_signup()
+                
             elif ch==3:
                 break
             else:
@@ -659,7 +1078,7 @@ def user_login():
             print(' '*(60-len('login successful')//2),"Login Successful!")
             print('*'*120)
             print()
-            #user_interface(id)
+            user_interface(id)
             break
     else:
         print()
@@ -690,9 +1109,9 @@ def menu_page():
         print()
         print('='*120)
 
-    
+   
         try:
-            ch=int(input())
+            ch=int(input('-->'))
 
             if ch==1:
                 admin_login()
@@ -712,7 +1131,7 @@ def menu_page():
                 print(' '*(60-len('INVALID CHOICE!!')//2),'INVALID CHOICE!!')
                 print('*'*120)
                 print()
-                
+               
         except ValueError:
             print()
             print('*'*120)
@@ -720,7 +1139,7 @@ def menu_page():
             print('*'*120)
             print()
 
-#---------------------------------------------------------------------------------------------------------------------------------------------------------         
+#---------------------------------------------------------------------------------------------------------------------------------------------------------        
 
 def welcome_page():
     while True:
@@ -737,7 +1156,7 @@ def welcome_page():
         print('='*120)
              
         try:
-            ch=int(input())
+            ch=int(input('-->'))
             if ch==1:
                 menu_page()
                 break
@@ -748,7 +1167,7 @@ def welcome_page():
                 print('='*120)
                 print()
                 break
-            
+           
             else:
                 print()
                 print('*'*120)
@@ -756,24 +1175,24 @@ def welcome_page():
                 print('*'*120)
                 print()
                 #welcome_page()
-            
+           
         except ValueError:
             print()
             print('*'*120)
             print(' '*(60-len('The choice has to be an integer!!!')//2),'THE CHOICE HAS TO BE AN INTEGER!!!')
-            
+           
             print('*'*120)
             print()
+           
             
-            #welcome_page()
 #---------------------------------------------------------------------------------------------------------------------------------------------------------
      
 
-
 '''
-cur.execute('create table user_login(id varchar(100), password varchar(100)')
-cur.execute('create table doctor_login(id varchar(100), password varchar(100)')
-cur.execute('create table admin_login(id varchar(100), password varchar(100)')
+
+cur.execute('create table if not exists user_login(id varchar(100), password varchar(100))')
+cur.execute('create table if not exists doctor_login(id varchar(100), password varchar(100))')
+cur.execute('create table if not exists admin_login(id varchar(100), password varchar(100))')
 con.commit()
 cur.execute("insert into admin_login values('admin','admin' )")
 
@@ -789,21 +1208,22 @@ cur.execute("insert into user_login values('u104','u104' )")
 cur.execute("insert into user_login values('u105','u105' )")
 con.commit()
 
-cur.execute('create table doctor_list(id varchar(100), name varchar(100), speciality varchar(100), experience int, status varchar(100)')
-cur.execute("insert into doctor_list values('d101','dyan','heart',10,'available')") 
+cur.execute('create table if not exists doctor_list(id varchar(100), name varchar(100), speciality varchar(100), experience int, status varchar(100))')
+cur.execute("insert into doctor_list values('d101','dyan','heart',10,'available')")
 #status---available,busy,away
 cur.execute("insert into doctor_list values('d102','nishanth','brain',8,'busy')")
 cur.execute("insert into doctor_list values('d103','jeevith','eye',9,'away')")
 con.commit()
 
-cur.execute('create table d101_patient_list(patient_id varchar(100), name varchar(100), notification varchar(100))')
-cur.execute('create table d102_patient_list(patient_id varchar(100), name varchar(100), notification varchar(100))')
-cur.execute('create table d103_patient_list(patient_id varchar(100), name varchar(100), notification varchar(100))')
+cur.execute('create table if not exists d101_patient_list(patient_id varchar(100), name varchar(100), notification varchar(100))')
+cur.execute('create table if not exists d102_patient_list(patient_id varchar(100), name varchar(100), notification varchar(100))')
+cur.execute('create table if not exists d103_patient_list(patient_id varchar(100), name varchar(100), notification varchar(100))')
 con.commit()
 
-cur.execute('create table d101_appointment_request(patient_id varchar(100), name varchar(100), message varchar(100))')
-cur.execute('create table d102_appointment_request(patient_id varchar(100), name varchar(100), message varchar(100))')
-cur.execute('create table d103_appointment_request(patient_id varchar(100), name varchar(100), message varchar(100))')
+cur.execute('create table if not exists d101_appointment_request(patient_id varchar(100), name varchar(100), message varchar(100))')
+cur.execute('create table if not exists d102_appointment_request(patient_id varchar(100), name varchar(100), message varchar(100))')
+cur.execute('create table if not exists d103_appointment_request(patient_id varchar(100), name varchar(100), message varchar(100))')
+cur.execute('create table if not exists patient_list(id varchar(100), fname varchar(100), lname varchar(100), sex varchar(100), age int, job varchar(100), marital_status varchar(100), notifications varchar(100))')
 '''
 
 
@@ -811,8 +1231,21 @@ cur.execute('create table d103_appointment_request(patient_id varchar(100), name
 #for account deleting checking
 cur.execute("insert into doctor_login values('d103','d103' )")
 cur.execute("insert into doctor_list values('d103','jeevith','eye',9,'away')")
-cur.execute('create table d103_patient_list(patient_id varchar(100), name varchar(100), notification varchar(100))')
-cur.execute('create table d103_appointment_request(patient_id varchar(100), name varchar(100), message varchar(100))')
+cur.execute('create table if not exists d103_patient_list(patient_id varchar(100), name varchar(100), notification varchar(100))')
+cur.execute('create table if not exists d103_appointment_request(patient_id varchar(100), name varchar(100), message varchar(100))')
 con.commit()
+
+cur.execute('create table if not exists patient_list(id varchar(100), fname varchar(100), lname varchar(100), sex varchar(100), age int, job varchar(100), marital_status varchar(100), notifications varchar(100))')
+'''
+
+
+'''
+#for user delete
+
+
+
+
+
+
 '''
 welcome_page()
