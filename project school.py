@@ -443,7 +443,8 @@ def doctor_profile(id): #can be used in admin module also
                     print(' '*(60-len('1. AVAILABLE')//2),'1. AVAILABLE')
                     print(' '*(60-len('1. AVAILABLE')//2),'2. AWAY')
                     print(' '*(60-len('1. AVAILABLE')//2),'3. BUSY')
-                    print(' '*(60-len('1. AVAILABLE')//2),'4. CUSTOM')
+                    print(' '*(60-len('1. AVAILABLE')//2),'4. DO NOT DISTURB(wont recieve appointments)')
+                    print(' '*(60-len('1. AVAILABLE')//2),'5. Custom')
                     print()
                     print(' '*(60-len('Enter your Choice')//2),'Enter your Choice')
                     print()
@@ -477,7 +478,7 @@ def doctor_profile(id): #can be used in admin module also
                             print('*'*120)
                             print(' '*(60-len('STATUS UPDATED')//2),'STATUS UPDATED')
                             print('*'*120)
-                        elif ch==4:
+                        elif ch==5:
                             print()
                             print('='*120)
                             print()
@@ -492,7 +493,15 @@ def doctor_profile(id): #can be used in admin module also
                             print('*'*120)
                             print(' '*(60-len('STATUS UPDATED')//2),'STATUS UPDATED')
                             print('*'*120)
-                           
+                        elif ch==4:
+                            q=f"update doctor_list set status='dnd' where id='{id}'"
+                            cur.execute(q)
+                            con.commit()
+                            print()
+                            print('*'*120)
+                            print(' '*(60-len('STATUS UPDATED')//2),'STATUS UPDATED')
+                            print('*'*120)
+
                         else:
                             print()
                             print('*'*120)
@@ -967,8 +976,175 @@ def user_profile(id):
             print()
 
 
-#https://ctxt.io/2/AADQEHIeEw     ---------------------------------------------------------------------------------------------------------------------------------------------------------          
+#---------------------------------------------------------------------------------------------------------------------------------------------------------     
+def set_appointment(id):
+    q="select * from doctor_list"
+    cur.execute(q)
+    data=cur.fetchall()
+    heading=['ID','Name','Speciality','Experience','Status']
+    
+    while True:
+        print()
+        print('='*120)
+        print()
+        print(' '*(60-len('APPOINTMENT REQUEST')//2),'APPOINTMENT REQUEST')
+        print()
+        print(tabulate.tabulate(data,headers=heading))
+        print()
+        print(' '*(60-len('1. Search For Doctor by Name')//2),'1. Search For Doctor by Name')
+        print(' '*(60-len('1. Search For Doctor by Name')//2),'2. Search For Doctor by Speciality')
+        print(' '*(60-len('1. Search For Doctor by Name')//2),'3. View all Doctors')
+        print(' '*(60-len('1. Search For Doctor by Name')//2),'4. Back')
+        print()
+        print(' '*(60-len('Enter your Choice')//2),'Enter your Choice')
+        print()
+        print('='*120)
 
+
+        try:
+            ch=int(input())
+            if ch==1:
+                print()
+                print('='*120)
+                print()
+                print(' '*(60-len('SEARCH BY DOCTOR NAME')//2),'SEARCH BY DOCTOR NAME')
+                print()
+                print(' '*(60-len('Enter Name of Doctor : ')//2),'Enter Name of Doctor : ',end='')
+                doc_name=input()
+                doc_name=doc_name.lower()
+                print()
+                print('='*120)
+                q=f'select * from doctor_list where name="{doc_name}"'
+                
+                cur.execute(q)
+                search_result=cur.fetchall()
+                doc_id=search_result[0][0] #default doc id incase only 1 result comes
+                if len(search_result)==0:
+                    print()
+                    print('*'*120)
+                    temp=f'DOCTOR BY THE NAME "{doc_name}" DOESNT EXIST'
+                    print(' '*(60-len(temp)//2),temp)
+                    print('*'*120)
+                    print()
+                else:
+                    print()
+                    print('='*120)
+                    print()
+                    print(' '*(60-len('SEARCH RESULTS')//2),'SEARCH RESULTS')
+                    print()
+                    print(tabulate.tabulate(search_result,headers=heading))
+                    print()
+
+                    if len(search_result)!=1:
+                        print(' '*(60-len('Enter ID of Doctor : ')//2),'Enter ID of Doctor : ',end='')
+                        doc_id=input()
+                        doc_id=doc_id.lower()
+                        print()
+                        
+                        q=f'select * from doctor_list where id="{doc_id}"'
+                        cur.execute(q)
+                        check=cur.fetchone()
+                        
+                        if len(check)==0:
+                            print()
+                            print('*'*120)
+                            print(' '*(60-len('ID DOESNT EXIST')//2),'ID DOESNT EXIST')
+                            print('*'*120)
+                            print()
+                            continue
+
+                    print()
+                    print(' '*(60-len('Enter Your Appoint Request Message (enter details like date/illness) : ')//2),'Enter Your Appoint Request Message (enter details like date/illness) : ',end='')
+                    msg=input()
+                    print()
+                    print('='*120)
+                    q=f'select fname from patient_list where id="{id}"'
+                    cur.execute(q)
+                    patient_name=cur.fetchone()
+                    patient_name=patient_name[0][0]
+                    doc_appointment_table_name=doc_id+'_appointment_request'
+                    q=f"insert into {doc_appointment_table_name} values('{id}','{patient_name}','{msg}')"
+                    cur.execute(q)
+                    con.commit()
+                    print()
+                    print('*'*120)
+                    print(' '*(60-len('APPOINTMENT REQUEST SENT SUCCESSFULLY')//2),'APPOINTMENT REQUEST SENT SUCCESSFULLY')
+                    print(' '*(60-len('You will recieve a message when the doctor approves your appointment')//2),'You will recieve a message when the doctor approves your appointment')
+                    print('*'*120)
+                    print()
+
+            elif ch==2:
+                simple_names={'Neurologist':'brain'}
+                print()
+                print('='*120)
+                print()
+                print(' '*(60-len('SEARCH BY SPECIALITY')//2),'SEARCH BY SPECIALITY')
+                print()
+                print(' '*(60-len('Enter ID of Doctor : ')//2),'Enter ID of Doctor : ',end='')
+                
+                doc_id=input('-->')
+                doc_id=doc_id.lower()
+                print()
+                print('='*120)
+                q=f'select * from doctor_list where id="{doc_id}"'
+                cur.execute(q)
+                search_result=cur.fetchall()
+                if len(search_result)==0:
+                    print()
+                    print('*'*120)
+                    print(' '*(60-len('THE FOLLOWING ID DOESNT EXIST')//2),'THE FOLLOWING ID DOESNT EXIST')
+                    print('*'*120)
+                    print()
+                else:
+                    print()
+                    print('='*120)
+                    print()
+                    print(' '*(60-len('SEARCH RESULTS')//2),'SEARCH RESULTS')
+                    print()
+                    print(tabulate.tabulate(search_result,headers=heading))
+                    print()
+                    print(' '*(60-len('Enter Your Appoint Request Message (enter details like date/illness) : ')//2),'Enter Your Appoint Request Message (enter details like date/illness) : ',end='')
+                    msg=input()
+                    print()
+                    print('='*120)
+                    q=f'select fname from patient_list where id="{id}"'
+                    cur.execute(q)
+                    patient_name=cur.fetchone()
+                    patient_name=patient_name[0][0]
+                    doc_appointment_table_name=doc_id+'_appointment_request'
+                    q=f"insert into {doc_appointment_table_name} values('{id}','{patient_name}','{msg}')"
+                    print()
+                    print('*'*120)
+                    print(' '*(60-len('APPOINTMENT REQUEST SENT SUCCESSFULLY')//2),'APPOINTMENT REQUEST SENT SUCCESSFULLY')
+                    print(' '*(60-len('You will recieve a message when the doctor approves your appointment')//2),'You will recieve a message when the doctor approves your appointment')
+                    print('*'*120)
+                    print()
+                
+                pass
+
+            elif ch==3:
+                pass
+               
+            elif ch==4:
+                break
+            else:
+                print()
+                print('*'*120)
+                print(' '*(60-len('INVALID CHOICE!!')//2),'INVALID CHOICE!!')
+                print('*'*120)
+                print()
+
+        except ValueError:
+            print()
+            print('*'*120)
+            print(' '*(60-len('The choice has to be an integer!!!')//2),'THE CHOICE HAS TO BE AN INTEGER!!!')
+            print('*'*120)
+            print()
+
+
+
+
+#---------------------------------------------------------------------------------------------------------------------------------------------------------          
 def user_interface(id):
     while True:
         q=f"select notifications from patient_list where id='{id}' "
@@ -978,7 +1154,7 @@ def user_interface(id):
             break
         data=data[0]
         if data=='none':
-            notif="NO NOTIFICATIONS"
+            notif="NO MESSAGES"
         else:
             notif=data
         print()
@@ -990,7 +1166,7 @@ def user_interface(id):
 
         #center allign the notif
     
-        print('NOTIFICATIONS : ',notif)
+        print('MESSAGES : ',notif)
         print()
         print(' '*(60-len('1. Profile')//2),'1. Profile')
         print(' '*(60-len('1. Profile')//2),'2. Set Appointment')
@@ -1008,9 +1184,7 @@ def user_interface(id):
                 user_profile(id)
 
             elif ch==2:
-                #set_appointment(id)
-                pass
-
+                set_appointment(id)
             elif ch==3:
                 break
                
@@ -1256,14 +1430,4 @@ con.commit()
 cur.execute('create table if not exists patient_list(id varchar(100), fname varchar(100), lname varchar(100), sex varchar(100), age int, job varchar(100), marital_status varchar(100), notifications varchar(100))')
 '''
 
-
-'''
-#for user delete
-
-
-
-
-
-
-'''
 welcome_page()
