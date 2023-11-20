@@ -2017,10 +2017,12 @@ def user_interface(id):
                 print()
                 print(tabulate.tabulate(bill,headers=['Item Name','Cost','Quantity','Total Price']))
                 print()
+                
                 cur.execute(f"select fname,lname from patient_list where id='{id}'")
                 name=cur.fetchall()
                 name=name[0][0]+'_'+name[0][1]
-                dt = str(datetime.datetime.now().year) + "-" + str(datetime.datetime.now().month) + "-" + str(datetime.datetime.now().day) + "-" + str(datetime.datetime.now().hour) + "-" + str(datetime.datetime.now().minute) + "-" + str(datetime.datetime.now().second)
+                print(' '*(60-len(f'Bill has been generated under the file Name "{name}.txt"')//2),f'Bill has been generated under the file Name "{name}.txt"')
+                dt=str(datetime.datetime.now().year)+"-" + str(datetime.datetime.now().month) + "-" + str(datetime.datetime.now().day) + "-" + str(datetime.datetime.now().hour) + "-" + str(datetime.datetime.now().minute) + "-" + str(datetime.datetime.now().second)
                 invoice = str(dt)  # unique invoice
                 t = str(datetime.datetime.now().year) + "-" + str(datetime.datetime.now().month) + "-" + str(datetime.datetime.now().day)  # date
                 d = str(t)  # date
@@ -2028,31 +2030,49 @@ def user_interface(id):
                 e = str(u)
                 
                 f=open(name+'.txt','w')
-                f.write('='*80)
+                f.write('='*100)
                 f.write('\n')
-                t=' '*(40-len('NAGRAJU HOSPITAL')//2)+'NAGRAJU HOSPITAL'
+                t=' '*(50-len('NAGRAJU HOSPITAL')//2)+'NAGRAJU HOSPITAL'
                 f.write(t)
                 f.write('\n\n')
                 t='HOSPITAL BILL'
                 f.write(t)
                 f.write('\n\n')
-                f.write('Invoice: ' + invoice + '\t\tDate: ' + d )
+                f.write('Invoice: '+invoice+' '*(100-len('Invoice: '+invoice)-len('Date: '+d+' '))+'Date: '+d+' ')
                 f.write('\n\n')
                 f.write('Patient Name : '+name)
                 f.write('\n\n')
-                f.write('='*80)
-                f.write('\n\n')
-                f.write('_'*80)
+                
+                f.write('-'*100)
                 f.write('\n')
-                t='ITEM NAME'+' '*(20-len('ITEM NAME'))+str('UNIT PRICE')+' '*(20-len(str('UNIT PRICE')))+str('QUANTITY')+' '*(20-len(str('QUANTITY')))+str('TOTAL')+' '*(20-len(str('TOTAL')))
-                f.write("\ITEM NAME\tUNIT PRICE\tQUANTITY\tTOTAL")
+                t='SL_NO.'+' '*(20-len('SL_NO.'))+'ITEM NAME'+' '*(20-len('ITEM NAME'))+str('UNIT PRICE')+' '*(20-len(str('UNIT PRICE')))+str('QUANTITY')+' '*(20-len(str('QUANTITY')))+str('TOTAL')+' '*(20-len(str('TOTAL')))
+                f.write(t)
                 f.write('\n')
-                f.write('_'*80)
+                f.write('-'*100)
+                f.write('\n')
+                slno=1
+                grand_total=0
 
                 for i in bill:
-                    f.write(i[0]+' '*(20-len(i[0]))+str(i[1])+' '*(20-len(str(i[1])))+str(i[2])+' '*(20-len(str(i[2])))+str(i[3])+' '*(20-len(str(i[3]))))
+                    f.write(str(slno)+'.'+' '*(20-len(str(slno)+'.'))+i[0]+' '*(20-len(i[0]))+str(i[1])+' '*(20-len(str(i[1])))+str(i[2])+' '*(20-len(str(i[2])))+str(i[3])+' '*(20-len(str(i[3]))))
                     f.write('\n\n')
-
+                    slno+=1
+                    grand_total+=i[3]
+                f.write('-'*100)
+                f.write('\n')
+                f.write(' '*(80-len('GRAND TOTAL : '))+'GRAND TOTAL : '+str(grand_total)+'Rs')
+                f.write('\n')
+                f.write('-'*100)
+                f.write('\n\n')
+                f.write(' '*(80-len('GST (18%) : '))+'GST (18%) : '+str(grand_total*0.18)+'Rs')
+                f.write('\n\n')
+                f.write(' '*(80-len('PAYABLE AMOUNT : '))+'PAYABLE AMOUNT : '+str(grand_total*1.18)+'Rs')
+                f.write('\n\n')
+                f.write('='*100)
+                f.write('\n')
+                f.write(' '*(50-len('Thank You For Choosing Nagaraju Hospital')//2)+'Thank You For Choosing Nagaraju Hospital')
+                f.write('\n')
+                f.write('='*100)
                 f.close()
             else:
                 print()
@@ -2273,10 +2293,11 @@ con.commit()
 
 cur.execute('create table if not exists patient_list(id varchar(100), fname varchar(100), lname varchar(100), sex varchar(100), age int, job varchar(100), marital_status varchar(100), notifications varchar(100))')
 '''
+
 welcome_page()
 
 
-
+'''
 
 print('='*120)
 print()
@@ -2319,3 +2340,5 @@ except ValueError:
     print(' '*(60-len('The choice has to be an integer!!!')//2),'THE CHOICE HAS TO BE AN INTEGER!!!')
     print('*'*120)
     print()
+
+'''
