@@ -2,8 +2,19 @@ import mysql.connector
 import tabulate
 import time
 import datetime
-con=mysql.connector.connect(host='localhost',user='root',password='sql123',database='hospital')
+con=mysql.connector.connect(host='localhost',user='root',password='sql123')
 cur=con.cursor()
+cur.execute('create database if not exists hospital')
+cur.execute('use hospital')
+cur.execute('create table if not exists user_login(id varchar(100), password varchar(100))')
+cur.execute('create table if not exists doctor_login(id varchar(100), password varchar(100))')
+cur.execute('create table if not exists admin_login(id varchar(100), password varchar(100))')
+cur.execute('create table if not exists bill_list(item_code varchar(100),item varchar(100), cost float)')
+cur.execute("insert into admin_login values('admin','admin' )")
+cur.execute('create table if not exists patient_list(id varchar(100), fname varchar(100), lname varchar(100), sex varchar(100), age int, job varchar(100), marital_status varchar(100), notifications varchar(100))')
+cur.execute('create table if not exists doctor_list(id varchar(100), name varchar(100), speciality varchar(100), experience int, status varchar(100))')
+con.commit()
+
 admin_activity=False
 #---------------------------------------------------------------------------------------------------------------------------------------------------------
 def admin_edit():
@@ -2249,9 +2260,9 @@ cur.execute('create table if not exists user_login(id varchar(100), password var
 cur.execute('create table if not exists doctor_login(id varchar(100), password varchar(100))')
 cur.execute('create table if not exists admin_login(id varchar(100), password varchar(100))')
 cur.execute('create table if not exists bill_list(item_code varchar(100),item varchar(100), cost float)')
-con.commit()
 cur.execute("insert into admin_login values('admin','admin' )")
-
+con.commit()
+`````
 cur.execute("insert into doctor_login values('d101','d101' )")
 cur.execute("insert into doctor_login values('d102','d102' )")
 cur.execute("insert into doctor_login values('d103','d103' )")
@@ -2280,6 +2291,7 @@ cur.execute('create table if not exists d101_appointment_request(patient_id varc
 cur.execute('create table if not exists d102_appointment_request(patient_id varchar(100), name varchar(100), message varchar(100))')
 cur.execute('create table if not exists d103_appointment_request(patient_id varchar(100), name varchar(100), message varchar(100))')
 cur.execute('create table if not exists patient_list(id varchar(100), fname varchar(100), lname varchar(100), sex varchar(100), age int, job varchar(100), marital_status varchar(100), notifications varchar(100))')
+cur.execute('create table if not exists doctor_list(id varchar(100), name varchar(100), speciality varchar(100), experience int, status varchar(100))')
 '''
 
 
