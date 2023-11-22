@@ -10,7 +10,7 @@ cur.execute('create table if not exists user_login(id varchar(100), password var
 cur.execute('create table if not exists doctor_login(id varchar(100), password varchar(100))')
 cur.execute('create table if not exists admin_login(id varchar(100), password varchar(100))')
 cur.execute('create table if not exists bill_list(item_code varchar(100),item varchar(100), cost float)')
-cur.execute("insert into admin_login values('admin','admin' )")
+#cur.execute("insert into admin_login values('admin','admin' )")
 cur.execute('create table if not exists patient_list(id varchar(100), fname varchar(100), lname varchar(100), sex varchar(100), age int, job varchar(100), marital_status varchar(100), notifications varchar(100))')
 cur.execute('create table if not exists doctor_list(id varchar(100), name varchar(100), speciality varchar(100), experience int, status varchar(100))')
 con.commit()
@@ -478,7 +478,7 @@ def admin_interface():
                                     print(' '*(60-len('ACCOUNT DELETED SUCCESSFULLY')//2),'ACCOUNT DELETED SUCCESSFULLY')
                                     print('*'*120) 
 
-                        elif ch==4:
+                        elif ch==6:
                             break
                         
                         else:
@@ -1825,7 +1825,7 @@ def set_appointment(id):
                     print('='*120)
                     q=f'select fname from patient_list where id="{id}"'
                     cur.execute(q)
-                    patient_name=cur.fetchone()
+                    patient_name=cur.fetchall()
                     patient_name=patient_name[0][0]
                     doc_appointment_table_name=doc_id+'_appointment_request'
                     q=f"insert into {doc_appointment_table_name} values('{id}','{patient_name}','{msg}')"
@@ -1856,7 +1856,7 @@ def set_appointment(id):
                 doc_name=doc_name.lower()
                 print()
                 print('='*120)
-                q=f'select * from doctor_list where name="{doc_name}" and status!="dnd"'
+                q=f'select * from doctor_list where name like "{doc_name}%" and status!="dnd"'
                 
                 cur.execute(q)
                 search_result=cur.fetchall()
@@ -1868,7 +1868,10 @@ def set_appointment(id):
                     print(' '*(60-len(temp)//2),temp)
                     print('*'*120)
                     print()
+                #elif len(search_result)==1:
+
                 else:
+                    
                     doc_id=search_result[0][0]
                     print()
                     print('='*120)
@@ -1918,28 +1921,28 @@ def set_appointment(id):
                     print()
 
             elif ch==3:#incomplete
-                simple_names={'Neurologist':'brain'}
+                
                 print()
                 print('='*120)
                 print()
                 print(' '*(60-len('SEARCH BY SPECIALITY')//2),'SEARCH BY SPECIALITY')
                 print()
-                print(' '*(60-len('Enter ID of Doctor : ')//2),'Enter ID of Doctor : ',end='')
+                print(' '*(60-len('Enter Speciality : ')//2),'Enter Speciality : ',end='')
                 
-                doc_id=input('-->')
-                doc_id=doc_id.lower()
+                speciality_search=input('-->')
+                speciality_search=speciality_search.lower()
                 print()
                 print('='*120)
-                q=f'select * from doctor_list where id="{doc_id}"'
+                q=f"select * from doctor_list where speciality like '{speciality_search}%' and status!='dnd' "
                 cur.execute(q)
                 search_result=cur.fetchall()
                 if len(search_result)==0:
                     print()
                     print('*'*120)
-                    print(' '*(60-len('THE FOLLOWING ID DOESNT EXIST')//2),'THE FOLLOWING ID DOESNT EXIST')
+                    print(' '*(60-len('NO RESULT')//2),'NO RESULT')
                     print('*'*120)
                     print()
-                else:#incomplete
+                else:
                     print()
                     print('='*120)
                     print()
@@ -1947,6 +1950,24 @@ def set_appointment(id):
                     print()
                     print(tabulate.tabulate(search_result,headers=heading))
                     print()
+                    if len(search_result)!=1:
+                        print(' '*(60-len('Enter ID of Doctor : ')//2),'Enter ID of Doctor : ',end='')
+                        doc_id=input()
+                        doc_id=doc_id.lower()
+                        print()
+                        
+                        q=f'select * from doctor_list where id="{doc_id}" and status!="dnd"'
+                        cur.execute(q)
+                        check=cur.fetchone()
+                        
+                        if len(check)==0:
+                            print()
+                            print('*'*120)
+                            print(' '*(60-len('ID DOESNT EXIST')//2),'ID DOESNT EXIST')
+                            print('*'*120)
+                            print()
+                            continue
+
                     print(' '*(60-len('Enter Your Appoint Request Message (enter details like date/illness) : ')//2),'Enter Your Appoint Request Message (enter details like date/illness) : ',end='')
                     msg=input()
                     msg='patient : '+msg
