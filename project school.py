@@ -9,8 +9,13 @@ cur.execute('use hospital')
 cur.execute('create table if not exists user_login(id varchar(100), password varchar(100))')
 cur.execute('create table if not exists doctor_login(id varchar(100), password varchar(100))')
 cur.execute('create table if not exists admin_login(id varchar(100), password varchar(100))')
+con.commit()
+cur.execute("select * from admin_login")
+test=cur.fetchall()
+if len(test)==0:
+    cur.execute("insert into admin_login values('admin','admin' )")
+    
 cur.execute('create table if not exists bill_list(item_code varchar(100),item varchar(100), cost float)')
-#cur.execute("insert into admin_login values('admin','admin' )")
 cur.execute('create table if not exists patient_list(id varchar(100), fname varchar(100), lname varchar(100), sex varchar(100), age int, job varchar(100), marital_status varchar(100), notifications varchar(100))')
 cur.execute('create table if not exists doctor_list(id varchar(100), name varchar(100), speciality varchar(100), experience int, status varchar(100))')
 con.commit()
@@ -1207,8 +1212,9 @@ def doctor_manage_patient(d_id,p_id):
 
             elif ch==3:
                 cur.execute(f"delete from {d_id}_patient_list where patient_id='{p_id}'")
+
+                cur.execute(f"update patient_list set notifications='You have been discharged by the Doctor, Enter 4 to print your BILL' where id='{p_id}'")
                 con.commit()
-                cur.execute(f"update patient_list set notifications='You have been discharged by the Doctor, Enter 4 to print your BILL'")
                 print('='*120)
                 print()
                 print('*'*120)
@@ -1308,6 +1314,7 @@ def doctor_interface(id):
             elif ch==3:
                 cur.execute(f"select * from {id}_appointment_request")
                 appointment=cur.fetchall()
+                
                 heading=['PATIENT ID','NAME','MESSAGE']
                 print()
                 print('='*120)
@@ -1447,7 +1454,7 @@ def user_signup():
         print(' '*(60-len('Enter Sex(M/F) : ')//2),'Enter Sex(M/F) : ',end='')
         sex=input()
         sex=sex.lower()
-        if sex not in'mf':
+        if sex!='m' and sex!='f':
             print()
             print('*'*120)
             print(' '*(60-len('INVALID SEX!')//2),"INVALID SEX!")
@@ -1510,6 +1517,20 @@ def user_signup():
         id+=lname
        
     id+=str(age)
+    temp_id=id
+    id_variable=0
+    while True:
+        #print(f"select id from user_login where id='{temp_id}'")
+        cur.execute(f"select id from user_login where id='{temp_id}'")
+
+        existing_id_check=cur.fetchall()
+        if existing_id_check==[]:
+            break
+        else:
+            temp_id=id
+            id_variable+=1
+            temp_id+=str(id_variable)
+    id=temp_id  
     notif='none'
     q=f"insert into patient_list values('{id}','{fname}','{lname}','{sex}',{age},'{job}','{m_status}','{notif}')"
    
@@ -1943,6 +1964,7 @@ def set_appointment(id):
                     print('*'*120)
                     print()
                 else:
+                    doc_id=search_result[0][0]
                     print()
                     print('='*120)
                     print()
@@ -1958,7 +1980,7 @@ def set_appointment(id):
                         
                         q=f'select * from doctor_list where id="{doc_id}" and status!="dnd"'
                         cur.execute(q)
-                        check=cur.fetchone()
+                        check=cur.fetchall()
                         
                         if len(check)==0:
                             print()
@@ -1975,11 +1997,12 @@ def set_appointment(id):
                     print('='*120)
                     q=f'select fname from patient_list where id="{id}"'
                     cur.execute(q)
-                    patient_name=cur.fetchone()
+                    patient_name=cur.fetchall()
                     patient_name=patient_name[0][0]
                     doc_appointment_table_name=doc_id+'_appointment_request'
                     q=f"insert into {doc_appointment_table_name} values('{id}','{patient_name}','{msg}')"
-                    
+                    cur.execute(q)
+                    con.commit()
                     print()
                     print('*'*120)
                     print(' '*(60-len('APPOINTMENT REQUEST SENT SUCCESSFULLY')//2),'APPOINTMENT REQUEST SENT SUCCESSFULLY')
@@ -2016,7 +2039,7 @@ def user_interface(id):
         print()
         print('='*120)
         print()
-        heading=id.upper()
+        heading="Patient ID : "+id
         print(' '*(60-len(heading)//2),heading)
         print()
         #center allign the notif    
@@ -2052,7 +2075,7 @@ def user_interface(id):
                 
                 cur.execute(f"select fname,lname from patient_list where id='{id}'")
                 name=cur.fetchall()
-                name=name[0][0]+'_'+name[0][1]
+                name=name[0][0]+'_'+name[0][1]+'_'+id
                 print(' '*(60-len(f'Bill has been generated under the file Name "{name}.txt"')//2),f'Bill has been generated under the file Name "{name}.txt"')
                 dt=str(datetime.datetime.now().year)+"-" + str(datetime.datetime.now().month) + "-" + str(datetime.datetime.now().day) + "-" + str(datetime.datetime.now().hour) + "-" + str(datetime.datetime.now().minute) + "-" + str(datetime.datetime.now().second)
                 invoice = str(dt)  # unique invoice
@@ -2090,15 +2113,18 @@ def user_interface(id):
                     f.write('\n\n')
                     slno+=1
                     grand_total+=i[3]
+                    grand_total=(int(grand_total*100))/100
+                    gst=(int(grand_total*18))/100
+                    payable_amt=grand_total+gst
                 f.write('-'*100)
                 f.write('\n')
                 f.write(' '*(80-len('GRAND TOTAL : '))+'GRAND TOTAL : '+str(grand_total)+'Rs')
                 f.write('\n')
                 f.write('-'*100)
                 f.write('\n\n')
-                f.write(' '*(80-len('GST (18%) : '))+'GST (18%) : '+str(grand_total*0.18)+'Rs')
+                f.write(' '*(80-len('GST (18%) : '))+'GST (18%) : '+str(gst)+'Rs')
                 f.write('\n\n')
-                f.write(' '*(80-len('PAYABLE AMOUNT : '))+'PAYABLE AMOUNT : '+str(grand_total*1.18)+'Rs')
+                f.write(' '*(80-len('PAYABLE AMOUNT : '))+'PAYABLE AMOUNT : '+str(payable_amt)+'Rs')
                 f.write('\n\n')
                 f.write('='*100)
                 f.write('\n')
@@ -2106,6 +2132,9 @@ def user_interface(id):
                 f.write('\n')
                 f.write('='*100)
                 f.close()
+
+                cur.execute(f"delete from {id}_bill")
+                con.commit()
             else:
                 print()
                 print('*'*120)
