@@ -16,8 +16,10 @@ if len(test)==0:
     cur.execute("insert into admin_login values('admin','admin' )")
     
 cur.execute('create table if not exists bill_list(item_code varchar(100),item varchar(100), cost float)')
+
 cur.execute('create table if not exists patient_list(id varchar(100), fname varchar(100), lname varchar(100), sex varchar(100), age int, job varchar(100), marital_status varchar(100), notifications varchar(100))')
 cur.execute('create table if not exists doctor_list(id varchar(100), name varchar(100), speciality varchar(100), experience int, status varchar(100))')
+
 con.commit()
 
 admin_activity=False
@@ -681,6 +683,7 @@ def admin_interface():
                     print(' '*(60-len('1. Add New Item')//2),'2. Delete Item')
                     print(' '*(60-len('1. Add New Item')//2),'3. Update Item')
                     print(' '*(60-len('1. Add New Item')//2),'4. Back')
+                    print(' '*(60-len('1. Add New Item')//2),'5. Reset to Default')
                     print()
                     print(' '*(60-len('Enter your Choice')//2),'Enter your Choice')
                     print()
@@ -791,6 +794,18 @@ def admin_interface():
 
                         elif ch==4:
                             break
+                        elif ch==5:
+                            cur.execute("drop table bill_list")
+                            cur.execute('create table if not exists bill_list(item_code varchar(100),item varchar(100), cost float)')
+                            cur.execute(bill_item_query)
+                            con.commit()
+                            print()
+                            print('='*120)
+                            print()
+                            print('*'*120)
+                            print(' '*(60-len('RESET TO DEFAULT LIST')//2),'RESET TO DEFAULT LIST')
+                            print('*'*120)
+                            print()
                         else:
                             print()
                             print('*'*120)
@@ -2077,13 +2092,12 @@ def user_interface(id):
                 name=cur.fetchall()
                 name=name[0][0]+'_'+name[0][1]+'_'+id
                 print(' '*(60-len(f'Bill has been generated under the file Name "{name}.txt"')//2),f'Bill has been generated under the file Name "{name}.txt"')
-                dt=str(datetime.datetime.now().year)+"-" + str(datetime.datetime.now().month) + "-" + str(datetime.datetime.now().day) + "-" + str(datetime.datetime.now().hour) + "-" + str(datetime.datetime.now().minute) + "-" + str(datetime.datetime.now().second)
-                invoice = str(dt)  # unique invoice
-                t = str(datetime.datetime.now().year) + "-" + str(datetime.datetime.now().month) + "-" + str(datetime.datetime.now().day)  # date
-                d = str(t)  # date
-                u = str(datetime.datetime.now().hour) + ":" + str(datetime.datetime.now().minute) + ":" + str(datetime.datetime.now().second)  # time
-                e = str(u)
-                
+                dt=str(datetime.datetime.now().year)+"-"+str(datetime.datetime.now().month)+"-"+str(datetime.datetime.now().day)+"-"+str(datetime.datetime.now().hour)+"-"+str(datetime.datetime.now().minute)+"-"+str(datetime.datetime.now().second)
+                invoice =str(dt)  # unique invoice code it makes
+
+                date = str(datetime.datetime.now().year)+"-"+str(datetime.datetime.now().month)+"-" +str(datetime.datetime.now().day)  
+                d=str(date)  #date
+             
                 f=open(name+'.txt','w')
                 f.write('='*100)
                 f.write('\n')
@@ -2097,10 +2111,9 @@ def user_interface(id):
                 f.write('\n\n')
                 f.write('Patient Name : '+name)
                 f.write('\n\n')
-                
                 f.write('-'*100)
                 f.write('\n')
-                t='SL_NO.'+' '*(20-len('SL_NO.'))+'ITEM NAME'+' '*(20-len('ITEM NAME'))+str('UNIT PRICE')+' '*(20-len(str('UNIT PRICE')))+str('QUANTITY')+' '*(20-len(str('QUANTITY')))+str('TOTAL')+' '*(20-len(str('TOTAL')))
+                t='SL_NO.'+' '*(20-len('SL_NO.'))+'ITEM NAME'+ ' '*(20-len('ITEM NAME'))+ str('UNIT PRICE')+' '*(20-len(str('UNIT PRICE')))+str('QUANTITY')+' '*(20-len(str('QUANTITY')))+str('TOTAL')+' '*(20-len(str('TOTAL')))
                 f.write(t)
                 f.write('\n')
                 f.write('-'*100)
@@ -2116,6 +2129,8 @@ def user_interface(id):
                     grand_total=(int(grand_total*100))/100
                     gst=(int(grand_total*18))/100
                     payable_amt=grand_total+gst
+                    
+
                 f.write('-'*100)
                 f.write('\n')
                 f.write(' '*(80-len('GRAND TOTAL : '))+'GRAND TOTAL : '+str(grand_total)+'Rs')
@@ -2300,10 +2315,7 @@ def welcome_page():
             print('*'*120)
             print()          
 #---------------------------------------------------------------------------------------------------------------------------------------------------------   
-#insert into doctor_login values('d101','d101')
-#insert into doctor_list values('d101','dyan','heart',10,'available')
-#create table if not exists d101_patient_list(patient_id varchar(100), name varchar(100))
-#create table if not exists d101_appointment_request(patient_id varchar(100), name varchar(100), message varchar(100))
+
 '''
 
 cur.execute('create table if not exists user_login(id varchar(100), password varchar(100))')
@@ -2356,7 +2368,6 @@ con.commit()
 cur.execute('create table if not exists patient_list(id varchar(100), fname varchar(100), lname varchar(100), sex varchar(100), age int, job varchar(100), marital_status varchar(100), notifications varchar(100))')
 '''
 
-welcome_page()
 
 
 '''
@@ -2399,8 +2410,246 @@ try:
 except ValueError:
     print()
     print('*'*120)
-    print(' '*(60-len('The choice has to be an integer!!!')//2),'THE CHOICE HAS TO BE AN INTEGER!!!')
+    print(' '*(60-len('The choice has to be an intger!!!')//2),'THE CHOICE HAS TO BE AN INTEGER!!!')
     print('*'*120)
     print()
 
 '''
+'''
+l=['Abacavir', 'Acyclovir', 'Alemtuzumab', 'Alendronate', 'Allopurinol', 'Amifostine', 'Amikacin', 'Aminocaproic Acid', 'Amitriptyline', 'Amlodipine', 'Amoxicillin', 'Amphotericin B', 'Ampicillin', 'Anti-Inhibitor Coagulant Complex (FEIBA)', 'Anti-thymocyte globulin', 'Aprepitant', 'Asparaginase', 'Atazanavir', 'Atenolol', 'Atovaquone', 'Azithromycin', 'Baclofen', 'Bleomycin', 'Bortezomib', 'Bosentan', 'Busulfan', 'Calcium', 'Captopril', 'Carbamazepine', 'Carboplatin', 'Carmustine', 'Cefaclor', 'Cefepime', 'Cefixime', 'Ceftazidime', 'Cefuroxime', 'Celecoxib', 'Cephalexin', 'Cidofovir', 'Cisplatin', 'Cladribine', 'Clarithromycin', 'Clindamycin', 'Clobazam', 'Clofarabine', 'Codeine', 'Crizanlizumab', 'Crizotinib', 'Cyclobenzaprine', 'Cyclophosphamide', 'Cyclosporine', 'Cyproheptadine', 'Cytarabine', 'Dacarbazine', 'Dactinomycin', 'Dapsone', 'Darunavir', 'Dasatinib', 'Daunorubicin', 'Deferasirox', 'Desmopressin', 'Dexamethasone', 'Diclofenac', 'Didanosine', 'Dinutuximab', 'Dobutamine', 'Dopamine', 'Dornase alfa', 'Doxorubicin', 'Dronabinol', 'Efavirenz', 'Efavirenz', 'Enalapril', 'Enoxaparin', 'Erlotinib', 'Erythromycin', 'Erythropoietin', 'Etonogestrel', 'Etoposide', 'Etravirine', 'Famciclovir', 'Famotidine', 'Fidaxomicin', 'Fluconazole', 'Fludarabine', 'Fluorouracil', 'Foscarnet', 'Furosemide', 'Gabapentin', 'Ganciclovir', 'Gefitinib', 'Gemcitabine', 'Gemtuzumab ozogamicin', 'GM-CSF ', 'Granisetron', 'Heparin Lock Flush for children and young adults', 'Heparin Lock Flush for infants', 'Hydralazine', 'Hydrocodone with acetaminophen', 'Hydrocortisone', 'Hydromorphone', 'Hydroxyurea', 'Hydroxyurea for sickle cell disease', 'Ifosfamide', 'Imatinib', 'Imipenem', 'Immune globulin', 'Interferon alfa-2a and alfa-2b', 'Interferon alfa-2b for melanoma', 'Interleukin-2', 'Irinotecan', 'Isotretinoin', 'Itraconazole', 'Ketoconazole', 'L-glutamine', 'Labetalol', 'Lamivudine', 'Leucovorin with high dose methotrexate', 'Levothyroxine', 'Linezolid', 'Lomustine', 'Lopinavir', 'Lorazepam', 'Lorlatinib', 'Magnesium', 'Maraviroc ', 'Mechlorethamine', 'Megestrol acetate', 'Meloxicam', 'Melphalan', 'Meperidine', 'Mercaptopurine', 'Meropenem', 'Mesna', 'Methadone', 'Methotrexate', 'Methylphenidate', 'Metronidazole', 'Micafungin', 'Mitotane', 'Mitoxantrone', 'Modafinil', 'Morphine', 'Muromonab – CD3', 'Mycophenolate mofetil', 'Nelarabine', 'Nelfinavir', 'Neuromuscular blockers', 'Nevirapine', 'Norepinephrine', 'Omeprazole', 'Ondansetron', 'Oxycodone', 'Paclitaxel', 'PEGaspargase', 'Pegfilgrastim', 'Pemetrexed', 'Penicillin VK', 'Pentamidine (inhaled by mouth)', 'Phenobarbital', 'Phenytoin', 'Phosphorus', 'Posaconazole', 'Potassium', 'Prednisone', 'Probenecid', 'Procarbazine', 'Promethazine', 'Promethazine topical gel', 'Propoxyphene', 'Raltegravir ', 'Ranitidine', 'Rasburicase', 'Regorafenib', 'Rilpivirine', 'Rilpivirine', 'Ritonavir', 'Rituximab', 'Rivaroxaban', 'Ruxolitinib', 'Sacubitril', 'Saquinavir', 'Sirolimus', 'Sorafenib', 'Stavudine', 'Sucralfate', 'Sugammadex', 'Sunitinib', 'Tacrolimus', 'Temozolomide', 'Teniposide', 'Tenofovir', 'Thioguanine', 'Thiotepa', 'Tobramycin', 'Topotecan', 'Tretinoin – applied to the skin', 'Tretinoin – by mouth', 'Trimethoprim', 'Valproic acid', 'Vancomycin', 'Vinblastine', 'Vincristine', 'Voriconazole', 'Vorinostat', 'Voxelotor', 'Warfarin', 'Zidovudine']
+
+item_codes=[]
+for i in l:
+    integer=r.randrange(1,30)
+    integer*=100
+    integer1=r.randrange(0,2)
+    if integer1==0:
+        integer+=99
+    else:
+        integer+=50
+
+    code=i[0:3].lower()
+    temp_code=code
+    count=1
+    while True:
+        #print(temp_code)
+        if temp_code not in item_codes:
+            item_codes+=[temp_code]
+            code=temp_code
+            break
+        else:
+            temp_code=code+str(count)
+            
+            
+        count+=1
+
+    p=(code,i,integer)
+    print(p,',')
+'''
+bill_item_query='''insert into bill_list values('aba1', 'Abacavir-1', 1150) ,
+('aba', 'Abacavir', 2450) ,
+('acy', 'Acyclovir', 1050) ,
+('ale', 'Alemtuzumab', 1599) ,
+('ale1', 'Alendronate', 350) ,
+('all', 'Allopurinol', 2499) ,
+('ami', 'Amifostine', 650) ,
+('ami1', 'Amikacin', 1399) ,
+('ami2', 'Aminocaproic Acid', 2699) ,
+('ami3', 'Amitriptyline', 550) ,
+('aml', 'Amlodipine', 2199) ,
+('amo', 'Amoxicillin', 150) ,
+('amp', 'Amphotericin B', 2199) ,
+('amp1', 'Ampicillin', 399) ,
+('apr', 'Aprepitant', 2950) ,
+('asp', 'Asparaginase', 2550) ,
+('ata', 'Atazanavir', 1299) ,
+('ate', 'Atenolol', 2799) ,
+('ato', 'Atovaquone', 1750) ,
+('azi', 'Azithromycin', 1350) ,
+('bac', 'Baclofen', 1150) ,
+('ble', 'Bleomycin', 1199) ,
+('bor', 'Bortezomib', 799) ,
+('bos', 'Bosentan', 1550) ,
+('bus', 'Busulfan', 1750) ,
+('cal', 'Calcium', 450) ,
+('cap', 'Captopril', 1099) ,
+('car', 'Carbamazepine', 499) ,
+('car1', 'Carboplatin', 850) ,
+('car2', 'Carmustine', 2399) ,
+('cef', 'Cefaclor', 2599) ,
+('cef1', 'Cefepime', 2950) ,
+('cef2', 'Cefixime', 1250) ,
+('cef3', 'Ceftazidime', 699) ,
+('cef4', 'Cefuroxime', 2099) ,
+('cel', 'Celecoxib', 699) ,
+('cep', 'Cephalexin', 750) ,
+('cid', 'Cidofovir', 350) ,
+('cis', 'Cisplatin', 899) ,
+('cla', 'Cladribine', 2350) ,
+('cla1', 'Clarithromycin', 1250) ,
+('cli', 'Clindamycin', 2550) ,
+('clo', 'Clobazam', 1550) ,
+('clo1', 'Clofarabine', 2950) ,
+('cod', 'Codeine', 1750) ,
+('cri', 'Crizanlizumab', 350) ,
+('cri1', 'Crizotinib', 2299) ,
+('cyc', 'Cyclobenzaprine', 2250) ,
+('cyc1', 'Cyclophosphamide', 150) ,
+('cyc2', 'Cyclosporine', 299) ,
+('cyp', 'Cyproheptadine', 2999) ,
+('cyt', 'Cytarabine', 1250) ,
+('dac', 'Dacarbazine', 150) ,
+('dac1', 'Dactinomycin', 2099) ,
+('dap', 'Dapsone', 399) ,
+('dar', 'Darunavir', 850) ,
+('das', 'Dasatinib', 2650) ,
+('dau', 'Daunorubicin', 799) ,
+('def', 'Deferasirox', 1050) ,
+('des', 'Desmopressin', 2599) ,
+('dex', 'Dexamethasone', 750) ,
+('dic', 'Diclofenac', 150) ,
+('did', 'Didanosine', 2299) ,
+('din', 'Dinutuximab', 2250) ,
+('dob', 'Dobutamine', 1099) ,
+('dop', 'Dopamine', 2799) ,
+('dor', 'Dornase alfa', 899) ,
+('dox', 'Doxorubicin', 1099) ,
+('dro', 'Dronabinol', 1850) ,
+('efa', 'Efavirenz', 2550) ,
+('efa1', 'Efavirenz', 1899) ,
+('ena', 'Enalapril', 2499) ,
+('eno', 'Enoxaparin', 1099) ,
+('erl', 'Erlotinib', 1950) ,
+('ery', 'Erythromycin', 550) ,
+('ery1', 'Erythropoietin', 850) ,
+('eto', 'Etonogestrel', 750) ,
+('eto1', 'Etoposide', 950) ,
+('etr', 'Etravirine', 2399) ,
+('fam', 'Famciclovir', 2950) ,
+('fam1', 'Famotidine', 1650) ,
+('fid', 'Fidaxomicin', 2699) ,
+('flu', 'Fluconazole', 2450) ,
+('flu1', 'Fludarabine', 1099) ,
+('flu2', 'Fluorouracil', 599) ,
+('fos', 'Foscarnet', 1650) ,
+('fur', 'Furosemide', 150) ,
+('gab', 'Gabapentin', 650) ,
+('gan', 'Ganciclovir', 2199) ,
+('gef', 'Gefitinib', 699) ,
+('gem', 'Gemcitabine', 1299) ,
+('gem1', 'Gemtuzumab-oz', 1250) ,
+('gm-', 'GM-CSF ', 599) ,
+('gra', 'Granisetron', 1899) ,
+('hep', 'Heparin - adults', 2550) ,
+('hep1', 'Heparin - infants', 1999) ,
+('hyd', 'Hydralazine', 2899) ,
+('hyd1', 'Hydrocodone', 850) ,
+('hyd2', 'Hydrocortisone', 1650) ,
+('hyd3', 'Hydromorphone', 1250) ,
+('hyd4', 'Hydroxyurea', 750) ,
+('ifo', 'Ifosfamide', 1550) ,
+('ima', 'Imatinib', 2399) ,
+('imi', 'Imipenem', 1550) ,
+('imm', 'Immune globulin', 1550) ,
+('int', 'Interferon-2a', 350) ,
+('int1', 'Interferon-2b', 1850) ,
+('int2', 'Interleukin-2', 1050) ,
+('iri', 'Irinotecan', 1999) ,
+('iso', 'Isotretinoin', 1499) ,
+('itr', 'Itraconazole', 1150) ,
+('ket', 'Ketoconazole', 1899) ,
+('l-g', 'L-glutamine', 2099) ,
+('lab', 'Labetalol', 1250) ,
+('lam', 'Lamivudine', 2799) ,
+('leu', 'Leucovorin', 1650) ,
+('lev', 'Levothyroxine', 2499) ,
+('lin', 'Linezolid', 999) ,
+('lom', 'Lomustine', 1250) ,
+('lop', 'Lopinavir', 1350) ,
+('lor', 'Lorazepam', 899) ,
+('lor1', 'Lorlatinib', 1750) ,
+('mag', 'Magnesium', 2299) ,
+('mar', 'Maraviroc ', 1350) ,
+('mec', 'Mechlorethamine', 2499) ,
+('meg', 'Megestrol acetate', 1299) ,
+('mel', 'Meloxicam', 699) ,
+('mel1', 'Melphalan', 1999) ,
+('mep', 'Meperidine', 1999) ,
+('mer', 'Mercaptopurine', 1099) ,
+('mer1', 'Meropenem', 2250) ,
+('mes', 'Mesna', 1150) ,
+('met', 'Methadone', 2899) ,
+('met1', 'Methotrexate', 599) ,
+('met2', 'Methylphenidate', 1950) ,
+('met3', 'Metronidazole', 1150) ,
+('mic', 'Micafungin', 499) ,
+('mit', 'Mitotane', 699) ,
+('mit1', 'Mitoxantrone', 2550) ,
+('mod', 'Modafinil', 2250) ,
+('mor', 'Morphine', 2699) ,
+('mur', 'Muromonab - CD3', 1050) ,
+('myc', 'Mycophenolate', 2350) ,
+('nel', 'Nelarabine', 1750) ,
+('nel1', 'Nelfinavir', 2599) ,
+('nev', 'Nevirapine', 2499) ,
+('nor', 'Norepinephrine', 499) ,
+('ome', 'Omeprazole', 599) ,
+('ond', 'Ondansetron', 2450) ,
+('oxy', 'Oxycodone', 950) ,
+('pac', 'Paclitaxel', 1350) ,
+('peg', 'PEGaspargase', 1699) ,
+('peg1', 'Pegfilgrastim', 2950) ,
+('pem', 'Pemetrexed', 2450) ,
+('pen', 'Penicillin VK', 1150) ,
+('pen1', 'Pentamidine(mouth)', 550) ,
+('phe', 'Phenobarbital', 799) ,
+('phe1', 'Phenytoin', 1499) ,
+('pho', 'Phosphorus', 450) ,
+('pos', 'Posaconazole', 1450) ,
+('pot', 'Potassium', 999) ,
+('pre', 'Prednisone', 1950) ,
+('pro', 'Probenecid', 1099) ,
+('pro1', 'Procarbazine', 2099) ,
+('pro2', 'Promethazine', 2450) ,
+('pro3', 'Promethazine topical gel', 850) ,
+('pro4', 'Propoxyphene', 2150) ,
+('ral', 'Raltegravir ', 2450) ,
+('ran', 'Ranitidine', 2350) ,
+('ras', 'Rasburicase', 550) ,
+('reg', 'Regorafenib', 399) ,
+('ril', 'Rilpivirine', 950) ,
+('ril1', 'Rilpivirine', 1599) ,
+('rit', 'Ritonavir', 550) ,
+('rit1', 'Rituximab', 450) ,
+('riv', 'Rivaroxaban', 2599) ,
+('rux', 'Ruxolitinib', 1199) ,
+('sac', 'Sacubitril', 550) ,
+('saq', 'Saquinavir', 2899) ,
+('sir', 'Sirolimus', 2399) ,
+('sor', 'Sorafenib', 150) ,
+('sta', 'Stavudine', 650) ,
+('suc', 'Sucralfate', 1499) ,
+('sug', 'Sugammadex', 1050) ,
+('sun', 'Sunitinib', 2550) ,
+('tac', 'Tacrolimus', 1799) ,
+('tem', 'Temozolomide', 150) ,
+('ten', 'Teniposide', 2199) ,
+('ten1', 'Tenofovir', 1599) ,
+('thi', 'Thioguanine', 699) ,
+('thi1', 'Thiotepa', 1650) ,
+('tob', 'Tobramycin', 199) ,
+('top', 'Topotecan', 2599) ,
+('tre', 'Tretinoin (skin)', 2599) ,
+('tre1', 'Tretinoin (mouth)', 2599) ,
+('tri', 'Trimethoprim', 199) ,
+('val', 'Valproic acid', 299) ,
+('van', 'Vancomycin', 750) ,
+('vin', 'Vinblastine', 1050) ,
+('vin1', 'Vincristine', 2350) ,
+('vor', 'Voriconazole', 450) ,
+('vor1', 'Vorinostat', 1450) ,
+('vox', 'Voxelotor', 2950) ,
+('war', 'Warfarin', 2799) ,
+('zid', 'Zidovudine', 699)'''
+
+welcome_page()
