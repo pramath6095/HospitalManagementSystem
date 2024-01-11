@@ -788,10 +788,13 @@ def admin_interface():
                             print(tabulate.tabulate(data,headers=heading))
                             print()
                             print(' '*(60-len('Enter Item Code to DELETE : ')//2),'Enter Item Code to DELETE : ',end='')
+                            print('='*120)
+                            print()
                             item_code=input()
                             cur.execute(f"select * from bill_list where item_code='{item_code}'")
                             data=cur.fetchone()
                             if data==None:
+                                
                                 print()
                                 print('*'*120)
                                 print(' '*(60-len('ITEM CODE DOESNT EXIST')//2),'ITEM CODE DOESNT EXIST')
