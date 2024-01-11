@@ -1,0 +1,13 @@
+d101,Nagaraju,ophthalmologist,10
+d102,Ahana,dermatology,6
+d103,Anand,endocrinology,3
+d104,Sriram,gastroenterology,10
+d105,Narayan,hematology,4
+d106,Santosh,orthopedics,2
+d107,Gita,pediatrics,6
+d108,Anita,psychiatry,9
+d109,Rajesh,pulmonology,1
+d110,Jaideep,radiology,4
+d111,Kumaran,urology,7
+d112,Eeshan,oncology,1
+d113,Sunil,neurology,5
