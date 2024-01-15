@@ -2,7 +2,6 @@ import mysql.connector
 import tabulate
 import time
 import datetime
-
 con=mysql.connector.connect(host='localhost',user='root',password='sql123')
 cur=con.cursor()
 cur.execute('create database if not exists hospital')
@@ -13,19 +12,17 @@ cur.execute('create table if not exists admin_login(id varchar(100), password va
 con.commit()
 cur.execute("select * from admin_login")
 test=cur.fetchall()
-
 if len(test)==0:
     cur.execute("insert into admin_login values('admin','admin' )") 
 cur.execute('create table if not exists bill_list(item_code varchar(100),item varchar(100), cost float)')
-cur.execute('create table if not exists patient_list(id varchar(100), fname varchar(100), lname varchar(100), sex varchar(100), age int,\
-            job varchar(100), marital_status varchar(100), notifications varchar(100))')
-cur.execute('create table if not exists doctor_list(id varchar(100), name varchar(100), speciality varchar(100), experience int, status varchar(100))')
+cur.execute('create table if not exists patient_list(id varchar(100), fname varchar(100),lname varchar(100),\
+sex varchar(100), age int, job varchar(100), marital_status varchar(100), notifications varchar(100))')
+cur.execute('create table if not exists doctor_list(id varchar(100), name varchar(100), speciality varchar(100),\
+experience int, status varchar(100))')
 con.commit()
 
 admin_activity=False # to check if admin is entering or user is entering user_interface
-
 #---------------------------------------------------------------------------------------------------------------------------------------------------------
-
 def reset_bill():
     cur.execute("drop table bill_list")
     cur.execute('create table if not exists bill_list(item_code varchar(100),item varchar(100), cost float)')
@@ -35,7 +32,7 @@ def reset_bill():
     cur.execute(bill_item_query)
     con.commit()
 
-#------------------------------------------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------------------------------
 def reset_doctor():
     cur.execute("select * from doctor_login")
     doctor_ids=cur.fetchall()
@@ -63,14 +60,15 @@ def reset_doctor():
         doc_name=record[1]
         doc_speciality=record[2]
         exp=record[3]
+        #print(f"insert into doctor_login values({d_id},{pwd})")
         cur.execute(f"insert into doctor_login values('{d_id}','{pwd}')")
         cur.execute(f"insert into doctor_list values('{d_id}','{doc_name}','{doc_speciality}',{exp},'available')")
         cur.execute(f"create table if not exists {d_id}_patient_list(patient_id varchar(100), name varchar(100))")
-        cur.execute(f"create table if not exists {d_id}_appointment_request(patient_id varchar(100), name varchar(100), message varchar(100))")
+        cur.execute(f"create table if not exists {d_id}_appointment_request(patient_id varchar(100),\
+        name varchar(100),message varchar(100))")
         con.commit()
         
 #---------------------------------------------------------------------------------------------------------------------------------------------------------
-
 def admin_edit():
     while True:
         print()
@@ -118,6 +116,7 @@ def admin_edit():
                         print(' '*(60-len('ID ENTERED ALREADY EXISTS!!')//2),'ID ENTERED ALREADY EXISTS!!')
                         print('*'*120)
                         print()
+                       
                     else:
                         cur.execute(f"insert into admin_login values('{id}','{pwd}')")
                         con.commit()
@@ -135,8 +134,10 @@ def admin_edit():
                         f.write(temp)
                         f.write('\n\n')
                         f.close()
-                        #log report over
+                        # log report over
 
+
+                       
             elif ch==2:
                 if len(data)>1:
                     c=0
@@ -194,7 +195,8 @@ def admin_edit():
                     f.write('\n\n')
                     f.close()
                     #log report
-                    
+
+
             elif ch==3:
                 c=0
                 print()
@@ -237,6 +239,7 @@ def admin_edit():
                     current_time = time.strftime("%H:%M:%S", t)
                     f=open('report.txt','a')
                     temp='['+current_time+'] : '+f"ADMIN PASSWORD CHANGED (ID : '{id}', PWD : '{pwd}')"
+
                     f.write(temp)
                     f.write('\n\n')
                     f.close()
@@ -259,6 +262,7 @@ def admin_edit():
             print()
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 def admin_interface():
     while True:
@@ -283,7 +287,6 @@ def admin_interface():
                 admin_edit()
                
             elif ch==2:
-
                 #log report
                 t = time.localtime()
                 current_time = time.strftime("%H:%M:%S", t)
@@ -293,7 +296,6 @@ def admin_interface():
                 f.write('\n\n')
                 f.close()
                 #log report
-
                 while True:
                     print('='*120)
                     print()
@@ -358,6 +360,7 @@ def admin_interface():
                             id=input()
                             print()
                             print('='*120)
+                        
                             q=f"select id from doctor_list where id='{id}'"
                             cur.execute(q)
                             data=cur.fetchone()
@@ -389,14 +392,15 @@ def admin_interface():
                             cur.execute(q)
                             data=cur.fetchone()
                             if data==None:
+                                
                                 print('='*120)
                                 print()
                                 print('*'*120)
                                 print(' '*(60-len('INVALID CHOICE!!')//2),'INVALID CHOICE!!')
                                 print('*'*120)
                                 print()
-
                             else:
+                               
                                 print()
                                 print(' '*(60-len('Enter New Password : ')//2),'Enter New Password : ',end='')
                                 PWD=input()
@@ -460,6 +464,7 @@ def admin_interface():
                             cur.execute(f"insert into doctor_list values('{d_id}','{doc_name}','{doc_speciality}',{exp},'available')")
                             cur.execute(f"create table if not exists {d_id}_patient_list(patient_id varchar(100), name varchar(100))")
                             cur.execute(f"create table if not exists {d_id}_appointment_request(patient_id varchar(100), name varchar(100), message varchar(100))")
+
                             cur.execute(f"select * from doctor_list where id='{d_id}'")
                             data=cur.fetchall()
                             heading=['ID','Name','Speciality','Experience','Status']
@@ -611,7 +616,9 @@ def admin_interface():
                             print()
                             print(' '*(60-len('Enter id to be edited : ')//2),'Enter id to be edited : ',end='')
                             id=input()
-                            print()                                                
+                            print()
+                            
+                        
                             q=f"select id from patient_list where id='{id}'"
                             cur.execute(q)
                             data=cur.fetchone()
@@ -623,7 +630,8 @@ def admin_interface():
                                 print('*'*120)
                                 print()
                 
-                            else:           
+                            else:
+            
                                 print(' '*(60-len('Enter New Password : ')//2),'Enter New Password : ',end='')
                                 PWD=input()
                                 print()
@@ -636,6 +644,8 @@ def admin_interface():
                                 print(' '*(60-len('PASSWORD CHANGED')//2),'PASSWORD CHANGED')
                                 print('*'*120)
                                 print()
+
+
 
                         elif ch==3:
                             global admin_activity
@@ -657,11 +667,11 @@ def admin_interface():
                             print(' '*(60-len('Enter id to be edited : ')//2),'Enter id to be edited : ',end='')
                             id=input()
                             print()
-                            print('='*120)                        
+                            print('='*120)
+                        
                             q=f"select id from patient_list where id='{id}'"
                             cur.execute(q)
                             data=cur.fetchone()
-
                             if data==None:
                                 print()
                                 print('*'*120)
@@ -786,7 +796,8 @@ def admin_interface():
                             item_code=input()
                             cur.execute(f"select * from bill_list where item_code='{item_code}'")
                             data=cur.fetchone()
-                            if data==None:                                
+                            if data==None:
+                                
                                 print()
                                 print('*'*120)
                                 print(' '*(60-len('ITEM CODE DOESNT EXIST')//2),'ITEM CODE DOESNT EXIST')
@@ -803,7 +814,9 @@ def admin_interface():
                                 print(' '*(60-len('ITEM DELETED')//2),'ITEM DELETED')
                                 print('*'*120)
                                 print()
-                          
+
+
+                            
                         elif ch==3:
                             print()
                             print('='*120)
@@ -835,6 +848,7 @@ def admin_interface():
                                 print(' '*(60-len('ITEM UPDATED')//2),'ITEM UPDATED')
                                 print('*'*120)
                                 print()
+
 
                         elif ch==4:
                             break
@@ -893,6 +907,7 @@ def admin_interface():
             print()
 #---------------------------------------------------------------------------------------------------------------------------------------------------------
 
+
 def admin_login():
     print()
     print('='*120)
@@ -938,9 +953,7 @@ def admin_login():
         print(' '*(60-len('Returning to Main Menu')//2),"Returning to Main Menu")
         print('*'*120)
         print()
-
 #---------------------------------------------------------------------------------------------------------------------------------------------------------
-
 def doctor_profile(id): #can be used in admin module also
     while True:
         q=f"select * from doctor_list where id='{id}'"
@@ -970,10 +983,8 @@ def doctor_profile(id): #can be used in admin module also
         print(' '*(60-len('Enter your Choice')//2),'Enter your Choice')
         print()
         print('='*120)
-
         try:
             ch=int(input('-->'))
-
             if ch==1:
                 print()
                 print('='*120)
@@ -991,6 +1002,7 @@ def doctor_profile(id): #can be used in admin module also
                 print(' '*(60-len('NAME CHANGED')//2),'NAME CHANGED')
                 print('*'*120)
 
+
             elif ch==2:
                 print()
                 print('='*120)
@@ -1007,7 +1019,8 @@ def doctor_profile(id): #can be used in admin module also
                 print('*'*120)
                 print(' '*(60-len('SPECIALITY UPDATED')//2),'SPECIALITY UPDATED')
                 print('*'*120)
-                
+               
+               
             elif ch==3:
                 print()
                 print('='*120)
@@ -1024,9 +1037,11 @@ def doctor_profile(id): #can be used in admin module also
                 print('*'*120)
                 print(' '*(60-len('EXPERIENCE UPDATED')//2),'EXPERIENCE UPDATED')
                 print('*'*120)
+
                
             elif ch==4:
                 while True:
+
                     print()
                     print('='*120)
                     print()
@@ -1062,7 +1077,6 @@ def doctor_profile(id): #can be used in admin module also
                             print('*'*120)
                             print(' '*(60-len('STATUS UPDATED')//2),'STATUS UPDATED')
                             print('*'*120)
-
                         elif ch==3:
                             q=f"update doctor_list set status='busy' where id='{id}'"
                             cur.execute(q)
@@ -1071,7 +1085,6 @@ def doctor_profile(id): #can be used in admin module also
                             print('*'*120)
                             print(' '*(60-len('STATUS UPDATED')//2),'STATUS UPDATED')
                             print('*'*120)
-
                         elif ch==5:
                             print()
                             print('='*120)
@@ -1087,7 +1100,6 @@ def doctor_profile(id): #can be used in admin module also
                             print('*'*120)
                             print(' '*(60-len('STATUS UPDATED')//2),'STATUS UPDATED')
                             print('*'*120)
-
                         elif ch==4:
                             q=f"update doctor_list set status='dnd' where id='{id}'"
                             cur.execute(q)
@@ -1104,7 +1116,6 @@ def doctor_profile(id): #can be used in admin module also
                             print('*'*120)
                             print()
                         break
-
                     except ValueError:
                         print()
                         print('*'*120)
@@ -1152,10 +1163,8 @@ def doctor_profile(id): #can be used in admin module also
                     print(' '*(60-len('ACCOUNT DELETED SUCCESSFULLY')//2),'ACCOUNT DELETED SUCCESSFULLY')
                     print('*'*120)
                     break
-
             elif ch==7:
                 break
-
             else:
                 print()
                 print('*'*120)
@@ -1170,7 +1179,6 @@ def doctor_profile(id): #can be used in admin module also
             print('*'*120)
             print()    
 #---------------------------------------------------------------------------------------------------------------------------------------------------------
-
 def doctor_manage_patient(d_id,p_id):
     while True:
         cur.execute(f"select * from patient_list where id='{p_id}'")
@@ -1224,12 +1232,10 @@ def doctor_manage_patient(d_id,p_id):
                     search_term=input()
                     search_term=search_term.lower()
                     print()
-
                     if search_term  =='exit' or search_term=='back' or search_term=='leave':
                         break
                     cur.execute(f"select * from bill_list where item_code like '{search_term}%' or item like '{search_term}%' ")
                     result=cur.fetchall()
-
                     if len(result)==0:
                         print(' '*(60-len(f'NO RESULTS FOUND FOR {search_term}')//2),f'NO RESULTS FOUND FOR {search_term}')
                         print()
@@ -1246,7 +1252,6 @@ def doctor_manage_patient(d_id,p_id):
                         print()
                         cur.execute(f"select * from bill_list where item_code='{item_code}'")
                         check=cur.fetchall()
-
                         if len(check)==0:
                             print(' '*(60-len('INVALID CODE')//2),'INVALID CODE',end='')
                             print()
@@ -1254,6 +1259,7 @@ def doctor_manage_patient(d_id,p_id):
                             continue
                         
                         else:
+
                             while True:
                                 print(' '*(60-len('Enter qty : ')//2),'Enter qty : ',end='')
                                 try:
@@ -1267,7 +1273,6 @@ def doctor_manage_patient(d_id,p_id):
                                     print(' '*(60-len('The choice has to be an integer!!!')//2),'THE CHOICE HAS TO BE AN INTEGER!!!')
                                     print('*'*120)
                                     print()
-
                             item_name=check[0][1]
                             item_cost=check[0][2]
                             item_total_cost=qty*item_cost
@@ -1277,6 +1282,7 @@ def doctor_manage_patient(d_id,p_id):
 
             elif ch==3:
                 cur.execute(f"delete from {d_id}_patient_list where patient_id='{p_id}'")
+
                 cur.execute(f"update patient_list set notifications='You have been discharged by the Doctor, Enter 4 to print your BILL' where id='{p_id}'")
                 con.commit()
                 print('='*120)
@@ -1287,8 +1293,10 @@ def doctor_manage_patient(d_id,p_id):
                 print()
                 break
 
+
             elif ch==4:
                 break
+
 
             else:
                 print()
@@ -1305,8 +1313,8 @@ def doctor_manage_patient(d_id,p_id):
             print() 
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------
-
 def doctor_patient(id):
+    
     q="select * from "+id+"_patient_list"
     cur.execute(q)
     patient_list=cur.fetchall()
@@ -1319,6 +1327,7 @@ def doctor_patient(id):
     print(tabulate.tabulate(patient_list,headers=heading))
     print()
     print(' '*(60-len('Enter Patient ID to manage : ')//2),'Enter Patient ID to manage : ',end='')
+
     p_id=input()
     print()
     print('='*120)
@@ -1337,17 +1346,18 @@ def doctor_patient(id):
     else:
         doctor_manage_patient(id,p_id)
 
-#--------------------------------------------------------------------------------------------------------------------------------------------------------- 
 
+#--------------------------------------------------------------------------------------------------------------------------------------------------------- 
 def doctor_interface(id):
     while True:
         q=f'select doctor_list.name from doctor_list,doctor_login where doctor_list.id=doctor_login.id and doctor_list.id="{id}"; '
         cur.execute(q)
+       
         data=cur.fetchone()
-
         if data==None :# after deleting acount, needs to exit loop
             break
         name=data[0]
+       
         head='DOCTOR '+name.upper()
         print('='*120)
         print()
@@ -1365,17 +1375,16 @@ def doctor_interface(id):
 
         try:
             ch=int(input('-->'))
-
             if ch==1:
                 doctor_profile(id)
                
             elif ch==2:
                 #for doctor seeing patients
                 doctor_patient(id)
-
             elif ch==3:
                 cur.execute(f"select * from {id}_appointment_request")
                 appointment=cur.fetchall()
+                
                 heading=['PATIENT ID','NAME','MESSAGE']
                 print()
                 print('='*120)
@@ -1388,7 +1397,6 @@ def doctor_interface(id):
                 p_id=input()            
                 print()
                 print('='*120)
-
                 for i in appointment:
                     if i[0]==p_id:
                         break
@@ -1409,7 +1417,6 @@ def doctor_interface(id):
                 print(' '*(60-len('APPOINTMENT ACCEPTED')//2),'APPOINTMENT ACCEPTED')
                 print(' '*(60-len('Patient can be viewed under "Patients" section')//2),'Patient can be viewed under "Patients" section')
                 print('*'*120)
-
             elif ch==4:
                 cur.execute(f"select * from {id}_appointment_request")
                 appointment=cur.fetchall()
@@ -1425,7 +1432,6 @@ def doctor_interface(id):
                 p_id=input()            
                 print()
                 print('='*120)
-
                 for i in appointment:
                     if i[0]==p_id:
                         break
@@ -1438,11 +1444,13 @@ def doctor_interface(id):
                     continue
 
                 cur.execute(f"delete from {id}_appointment_request where patient_id='{p_id}'")
+                #cur.execute(f"insert into {id}_patient_list values('{p_id}','{i[1]}')")
                 cur.execute(f"update patient_list set notifications='APPOINTMENT DECLINED BY {id}' where id='{p_id}'")
                 con.commit()
                 print()
                 print('*'*120)
                 print(' '*(60-len('APPOINTMENT DELETED')//2),'APPOINTMENT DELETED')
+                #print(' '*(60-len('Patient can be viewed under "Patients" section')//2),'Patient can be viewed under "Patients" section')
                 print('*'*120)
 
             elif ch==5:
@@ -1451,7 +1459,6 @@ def doctor_interface(id):
                 print(' '*(60-len('LOGGED OUT')//2),'LOGGED OUT')
                 print('*'*120)
                 break
-
             else:
                 print()
                 print('*'*120)
@@ -1482,7 +1489,6 @@ def doctor_login():
     print('='*120)
     cur.execute("select * from doctor_login")
     data=cur.fetchall()
-
     for i in data:
         if i[0]==id and i[1]==pwd:
             print()
@@ -1492,7 +1498,6 @@ def doctor_login():
             print()
             doctor_interface(id)
             break
-
     else:
         print()
         print('*'*120)
@@ -1502,8 +1507,8 @@ def doctor_login():
         print()
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------
-
 def user_signup():
+
     print()
     print('='*120)
     print()
@@ -1515,22 +1520,18 @@ def user_signup():
     print(' '*(60-len('Enter First Name : ')//2),'Enter Last Name : ',end='')
     lname=input()
     print()
-
     while True:
         print(' '*(60-len('Enter Sex(M/F) : ')//2),'Enter Sex(M/F) : ',end='')
         sex=input()
         sex=sex.lower()
-
         if sex!='m' and sex!='f':
             print()
             print('*'*120)
             print(' '*(60-len('INVALID SEX!')//2),"INVALID SEX!")
             print('*'*120)
             print()
-
         else:
             break
-
     while True:
         try:
             print()
@@ -1538,33 +1539,32 @@ def user_signup():
             age=int(input())
             print()
             break
-
         except ValueError:
             print()
             print('*'*120)
             print(' '*(60-len('The choice has to be an integer!!!')//2),'THE CHOICE HAS TO BE AN INTEGER!!!')
             print('*'*120)
             print()
-
+       
+   
     print(' '*(60-len('Enter Occupation : ')//2),'Enter Occupation : ',end='')
     job=input()
     print()
 
     while True:
+       
         print(' '*(60-len('Enter Marital status(m/nm) : ')//2),'Enter Marital status(m/nm) : ',end='')
         m_status=input()
         m_status=m_status.lower()
-
+       
         if m_status != 'nm' and m_status!='m':
             print()
             print('*'*120)
             print(' '*(60-len('INVALID INPUT')//2),"INVALID INPUT")
             print('*'*120)
             print()
-
         else:
-            break  
-
+            break        
         print()
     id=''
     print()
@@ -1573,37 +1573,37 @@ def user_signup():
     print()
     print('='*120)
    
+    #+lname[0:2]+str(age)
     try:
         id+=fname[0:2]
-  
+       
     except Exception:
         id+=fname
- 
+       
     try:
         id+=lname[0:2]
        
     except Exception:
         id+=lname
-
+       
     id+=str(age)
     temp_id=id
     id_variable=0
     while True:
-    
+        #print(f"select id from user_login where id='{temp_id}'")
         cur.execute(f"select id from user_login where id='{temp_id}'")
-        existing_id_check=cur.fetchall()
 
+        existing_id_check=cur.fetchall()
         if existing_id_check==[]:
             break
-
         else:
             temp_id=id
             id_variable+=1
             temp_id+=str(id_variable)
-
     id=temp_id  
     notif='none'
     q=f"insert into patient_list values('{id}','{fname}','{lname}','{sex}',{age},'{job}','{m_status}','{notif}')"
+   
     cur.execute(q)
     q=f'insert into user_login values("{id}","{pwd}")'
     cur.execute(q)
@@ -1611,24 +1611,32 @@ def user_signup():
     q=f'create table {table_name}(item varchar(100),cost float ,qty int,total_cost float)'
     cur.execute(q)
     con.commit()
+    #create table aa1_bill(item varchar(100),cost float ,qty int,total_cost float)
     print()
     print('*'*120)
     print(' '*(60-len('Account Created Successfully')//2),"Account Created Successfully")
     print('*'*120)
     print()
-
     if admin_activity==False:
         user_interface(id)
-
 #---------------------------------------------------------------------------------------------------------------------------------------------------------              
-
 def user_profile(id):
     while True:
         q=f"select id,fname,lname,sex,age,job,marital_status from patient_list where id='{id}' "
         cur.execute(q)
         data=cur.fetchall()
+        
+        '''
+        fname=data[0]
+        lname=data[1]
+        sex=data[2]
+        age=data[3]
+        job=data[4]
+        marital_status=data[5]'''
+
         heading=['ID','FName','LName','Sex','Age','Occupation','Marital_status']
 
+    
         print()
         print('='*120)
         print()
@@ -1649,6 +1657,8 @@ def user_profile(id):
         print(' '*(60-len('Enter your Choice')//2),'Enter your Choice')
         print()
         print('='*120)
+
+        
 
         try:
             ch=int(input('-->'))
@@ -1686,6 +1696,7 @@ def user_profile(id):
                 print(' '*(60-len('LAST-NAME UPDATED')//2),'LAST-NAME UPDATED')
                 print('*'*120)
 
+
             elif ch==3:
                 print()
                 print('='*120)
@@ -1695,14 +1706,12 @@ def user_profile(id):
                 print(' '*(60-len('Enter Sex : ')//2),'Enter Sex : ',end='')
                 sex=input()
                 sex=sex.lower()
-
                 if sex not in'mf':
                     print()
                     print('*'*120)
                     print(' '*(60-len('INVALID SEX!')//2),"INVALID SEX!")
                     print('*'*120)
                     print()
-
                 else:
                     print('='*120)
                     q=f'update patient_list set sex="{sex}" where id="{id}"'
@@ -1720,7 +1729,6 @@ def user_profile(id):
                 print(' '*(60-len('AGE UPDATE')//2),'AGE UPDATE')
                 print()
                 print(' '*(60-len('Enter Age : ')//2),'Enter Age : ',end='')
-
                 try:
                     age=int(input())
                     print('='*120)
@@ -1731,7 +1739,6 @@ def user_profile(id):
                     print('*'*120)
                     print(' '*(60-len('AGE UPDATED')//2),'AGE UPDATED')
                     print('*'*120)
-
                 except ValueError:
                     print()
                     print('*'*120)
@@ -1739,6 +1746,7 @@ def user_profile(id):
                     print('*'*120)
                     print()
 
+               
             elif ch==5:
                 print()
                 print('='*120)
@@ -1762,6 +1770,8 @@ def user_profile(id):
                 print()
                 print(' '*(60-len('MARITAL STATUS UPDATE')//2),'MARITAL STATUS UPDATE')
                 print()
+                
+       
                 print(' '*(60-len('Enter Marital Status(m/nm) : ')//2),'Enter Marital Status(m/nm) : ',end='')
                 m_status=input()
                 m_status=m_status.lower()
@@ -1772,8 +1782,8 @@ def user_profile(id):
                     print(' '*(60-len('INVALID INPUT')//2),"INVALID INPUT")
                     print('*'*120)
                     print()
-
                 else:
+    
                     print('='*120)
                     q=f'update patient_list set marital_status="{m_status}" where id="{id}"'
                     cur.execute(q)
@@ -1792,7 +1802,6 @@ def user_profile(id):
                 print()
                 print(' '*(60-len('ENTER (Y/N) ')//2),'ENTER (Y/N) ',end='')
                 ch=input('-->')
-
                 if ch in "Yy":
                     q1=f"delete from user_login where id='{id}' "
                     q2=f"delete from patient_list where id='{id}' "
@@ -1800,7 +1809,6 @@ def user_profile(id):
                     q3=f"drop table {temp}"
                     cur.execute("select id from doctor_login")
                     doctor_id_list=cur.fetchall()
-
                     for i in doctor_id_list:
                         table_name=i[0]+'_patient_list'
                         q=f"delete from {table_name} where patient_id='{id}'"
@@ -1818,7 +1826,6 @@ def user_profile(id):
                     print(' '*(60-len('ACCOUNT DELETED SUCCESSFULLY')//2),'ACCOUNT DELETED SUCCESSFULLY')
                     print('*'*120)
                     break
-
             elif ch==7:
                 print()
                 print('='*120)
@@ -1835,7 +1842,6 @@ def user_profile(id):
                 print('*'*120)
                 print(' '*(60-len('PASSWORD CHANGED')//2),'PASSWORD CHANGED')
                 print('*'*120)
-
             elif ch==9:
                 break
                 
@@ -1845,7 +1851,6 @@ def user_profile(id):
                 print(' '*(60-len('INVALID CHOICE!!')//2),'INVALID CHOICE!!')
                 print('*'*120)
                 print()
-
         except ValueError:
             print()
             print('*'*120)
@@ -1853,31 +1858,36 @@ def user_profile(id):
             print('*'*120)
             print()
 
+
 #---------------------------------------------------------------------------------------------------------------------------------------------------------     
 def set_appointment(id):
+    
     heading=['ID','Name','Speciality','Experience','Status']
     while True:
         print()
         print('='*120)
         print()
         print(' '*(60-len('APPOINTMENT REQUEST')//2),'APPOINTMENT REQUEST')
+        
         print()
         print(' '*(60-len('1. Search For Doctor by ID')//2),'1. Search For Doctor by ID')
         print(' '*(60-len('1. Search For Doctor by ID')//2),'2. Search For Doctor by Name')
         print(' '*(60-len('1. Search For Doctor by ID')//2),'3. Search For Doctor by Speciality')
+
         print(' '*(60-len('1. Search For Doctor by ID')//2),'4. Back')
         print()
         print(' '*(60-len('Enter your Choice')//2),'Enter your Choice')
         print()
         print('='*120)
 
+
         try:
             ch=int(input('-->'))
-
             if ch==1:
                 q="select * from doctor_list where status!='dnd'"
                 cur.execute(q)
                 data=cur.fetchall()
+                
                 print()
                 print('='*120)
                 print()
@@ -1897,7 +1907,6 @@ def set_appointment(id):
                     print('*'*120)
                     print()
                     continue
-
                 else:
                     print(' '*(60-len('Enter Your Appointment Request Message (enter details like date/illness) : ')//2),'Enter Your Appointment Request Message (enter details like date/illness) : ',end='')
                     msg=input()
@@ -1919,10 +1928,12 @@ def set_appointment(id):
                     print('*'*120)
                     print()
 
+
             elif ch==2:
                 q="select * from doctor_list where status!='dnd'"
                 cur.execute(q)
-                data=cur.fetchall()               
+                data=cur.fetchall()
+                
                 print()
                 print('='*120)
                 print()
@@ -1935,7 +1946,8 @@ def set_appointment(id):
                 doc_name=doc_name.lower()
                 print()
                 print('='*120)
-                q=f'select * from doctor_list where name like "{doc_name}%" and status!="dnd"'                
+                q=f'select * from doctor_list where name like "{doc_name}%" and status!="dnd"'
+                
                 cur.execute(q)
                 search_result=cur.fetchall()
                 
@@ -1946,8 +1958,10 @@ def set_appointment(id):
                     print(' '*(60-len(temp)//2),temp)
                     print('*'*120)
                     print()
+                #elif len(search_result)==1:
 
                 else:
+                    
                     doc_id=search_result[0][0]
                     print()
                     print('='*120)
@@ -1961,7 +1975,8 @@ def set_appointment(id):
                         print(' '*(60-len('Enter ID of Doctor : ')//2),'Enter ID of Doctor : ',end='')
                         doc_id=input()
                         doc_id=doc_id.lower()
-                        print()                       
+                        print()
+                        
                         q=f'select * from doctor_list where id="{doc_id}" and status!="dnd"'
                         cur.execute(q)
                         check=cur.fetchone()
@@ -1995,13 +2010,15 @@ def set_appointment(id):
                     print('*'*120)
                     print()
 
-            elif ch==3:                
+            elif ch==3:#incomplete
+                
                 print()
                 print('='*120)
                 print()
                 print(' '*(60-len('SEARCH BY SPECIALITY')//2),'SEARCH BY SPECIALITY')
                 print()
-                print(' '*(60-len('Enter Speciality : ')//2),'Enter Speciality : ',end='')                
+                print(' '*(60-len('Enter Speciality : ')//2),'Enter Speciality : ',end='')
+                
                 speciality_search=input('-->')
                 speciality_search=speciality_search.lower()
                 print()
@@ -2009,14 +2026,12 @@ def set_appointment(id):
                 q=f"select * from doctor_list where speciality like '{speciality_search}%' and status!='dnd' "
                 cur.execute(q)
                 search_result=cur.fetchall()
-
                 if len(search_result)==0:
                     print()
                     print('*'*120)
                     print(' '*(60-len('NO RESULT')//2),'NO RESULT')
                     print('*'*120)
                     print()
-
                 else:
                     doc_id=search_result[0][0]
                     print()
@@ -2026,12 +2041,12 @@ def set_appointment(id):
                     print()
                     print(tabulate.tabulate(search_result,headers=heading))
                     print()
-
                     if len(search_result)!=1:
                         print(' '*(60-len('Enter ID of Doctor : ')//2),'Enter ID of Doctor : ',end='')
                         doc_id=input()
                         doc_id=doc_id.lower()
-                        print()                     
+                        print()
+                        
                         q=f'select * from doctor_list where id="{doc_id}" and status!="dnd"'
                         cur.execute(q)
                         check=cur.fetchall()
@@ -2062,43 +2077,34 @@ def set_appointment(id):
                     print(' '*(60-len('APPOINTMENT REQUEST SENT SUCCESSFULLY')//2),'APPOINTMENT REQUEST SENT SUCCESSFULLY')
                     print(' '*(60-len('You will recieve a message when the doctor approves your appointment')//2),'You will recieve a message when the doctor approves your appointment')
                     print('*'*120)
-                    print()   
-
+                    print()           
             elif ch==4:
                 break
-
             else:
                 print()
                 print('*'*120)
                 print(' '*(60-len('INVALID CHOICE!!')//2),'INVALID CHOICE!!')
                 print('*'*120)
                 print()
-
         except ValueError:
             print()
             print('*'*120)
             print(' '*(60-len('The choice has to be an integer!!!')//2),'THE CHOICE HAS TO BE AN INTEGER!!!')
             print('*'*120)
             print()
-
 #---------------------------------------------------------------------------------------------------------------------------------------------------------          
-
 def user_interface(id):
     while True:
         q=f"select notifications from patient_list where id='{id}' "
         cur.execute(q)
         data=cur.fetchone()
-
         if data==None:
             break
         data=data[0]
-
         if data=='none':
             notif="NO MESSAGES"
-
         else:
             notif=data
-
         print()
         print('='*120)
         print()
@@ -2114,8 +2120,7 @@ def user_interface(id):
         print()
         print(' '*(60-len('Enter your Choice')//2),'Enter your Choice')
         print()
-        print('='*120)  
-
+        print('='*120)    
         try:       
             ch=int(input('-->'))
             if ch==1:
@@ -2136,17 +2141,17 @@ def user_interface(id):
                 print()
                 print(tabulate.tabulate(bill,headers=['Item Name','Cost','Quantity','Total Price']))
                 print()
+                
                 cur.execute(f"select fname,lname from patient_list where id='{id}'")
                 name=cur.fetchall()
                 name=name[0][0]+'_'+name[0][1]+'_'+id
                 print(' '*(60-len(f'Bill has been generated under the file Name "{name}.txt"')//2),f'Bill has been generated under the file Name "{name}.txt"')
-                
                 dt=str(datetime.datetime.now().year)+"-"+str(datetime.datetime.now().month)+"-"+str(datetime.datetime.now().day)+"-"+str(datetime.datetime.now().hour)+"-"+str(datetime.datetime.now().minute)+"-"+str(datetime.datetime.now().second)
-                invoice =str(dt)  #it makes an unique invoice using date and time 
+                invoice =str(dt)  # unique invoice code it makes
 
                 date = str(datetime.datetime.now().year)+"-"+str(datetime.datetime.now().month)+"-" +str(datetime.datetime.now().day)  
                 d=str(date)  #date
-
+             
                 f=open(name+'.txt','w')
                 f.write('='*100)
                 f.write('\n')
@@ -2178,7 +2183,8 @@ def user_interface(id):
                     grand_total=(int(grand_total*100))/100
                     gst=(int(grand_total*18))/100
                     payable_amt=grand_total+gst
-            
+                    
+
                 f.write('-'*100)
                 f.write('\n')
                 f.write(' '*(80-len('GRAND TOTAL : '))+'GRAND TOTAL : '+str(grand_total)+'Rs')
@@ -2198,23 +2204,19 @@ def user_interface(id):
 
                 cur.execute(f"delete from {id}_bill")
                 con.commit()
-
             else:
                 print()
                 print('*'*120)
                 print(' '*(60-len('INVALID CHOICE!!')//2),'INVALID CHOICE!!')
                 print('*'*120)
                 print()
-
         except ValueError:
             print()
             print('*'*120)
             print(' '*(60-len('The choice has to be an integer!!!')//2),'THE CHOICE HAS TO BE AN INTEGER!!!')
             print('*'*120)
-            print() 
-
+            print()       
 #---------------------------------------------------------------------------------------------------------------------------------------------------------  
-
 def user_page():
     while True:
         print()
@@ -2229,7 +2231,6 @@ def user_page():
         print(' '*(60-len('Enter your Choice')//2),'Enter your Choice')
         print()
         print('='*120)
-
         try:
             ch=int(input('-->'))
             if ch==1:
@@ -2237,6 +2238,7 @@ def user_page():
                 break
             elif ch==2:
                 user_signup()
+                
             elif ch==3:
                 break
             else:
@@ -2252,9 +2254,7 @@ def user_page():
             print(' '*(60-len('The choice has to be an integer!!!')//2),'THE CHOICE HAS TO BE AN INTEGER!!!')
             print('*'*120)
             print()
-
 #---------------------------------------------------------------------------------------------------------------------------------------------------------
-
 def user_login():
     print()
     print('='*120)
@@ -2271,7 +2271,6 @@ def user_login():
     print()
     cur.execute("select * from user_login")
     data=cur.fetchall()
-
     for i in data:
         if i[0]==id and i[1]==pwd:
             print()
@@ -2281,7 +2280,6 @@ def user_login():
             print()
             user_interface(id)
             break
-
     else:
         print()
         print('*'*120)
@@ -2290,9 +2288,7 @@ def user_login():
         print(' '*(60-len('Returning to Main Menu')//2),"Returning to Main Menu")
         print('*'*120)
         print()
-
 #---------------------------------------------------------------------------------------------------------------------------------------------------------
-
 def menu_page():
     while True:
         print()
@@ -2307,8 +2303,7 @@ def menu_page():
         print()
         print(' '*(60-len('Enter your Choice')//2),'Enter your Choice')
         print()
-        print('='*120) 
-
+        print('='*120)   
         try:
             ch=int(input('-->'))
             if ch==1:
@@ -2328,17 +2323,14 @@ def menu_page():
                 print('*'*120)
                 print(' '*(60-len('INVALID CHOICE!!')//2),'INVALID CHOICE!!')
                 print('*'*120)
-                print()    
-
+                print()              
         except ValueError:
             print()
             print('*'*120)
             print(' '*(60-len('The choice has to be an integer!!!')//2),'THE CHOICE HAS TO BE AN INTEGER!!!')
             print('*'*120)
             print()
-
 #---------------------------------------------------------------------------------------------------------------------------------------------------------        
-
 def welcome_page():
     while True:
         print('='*120)
@@ -2350,8 +2342,7 @@ def welcome_page():
         print()
         print(' '*(60-len('Enter your choice')//2),'Enter your choice')
         print()
-        print('='*120)  
-
+        print('='*120)    
         try:
             ch=int(input('-->'))
             if ch==1:
@@ -2370,18 +2361,17 @@ def welcome_page():
                 print(' '*(60-len('INVALID CHOICE!!')//2),'INVALID CHOICE!!')
                 print('*'*120)
                 print()
-
+                #welcome_page()
         except ValueError:
             print()
             print('*'*120)
             print(' '*(60-len('The choice has to be an integer!!!')//2),'THE CHOICE HAS TO BE AN INTEGER!!!')
             print('*'*120)
-            print()   
-
+            print()          
 #---------------------------------------------------------------------------------------------------------------------------------------------------------   
 
 '''
-front end formatting 
+
 print('='*120)
 print()
 print(' '*(60-len('')//2),'')
@@ -2394,8 +2384,7 @@ print(' '*(60-len('1. ')//2),'5.')
 print()
 print(' '*(60-len('Enter your choice')//2),'Enter your choice')
 print()
-print('='*120) 
-
+print('='*120)    
 try:
     ch=int(input('-->'))
     if ch==1:
@@ -2418,14 +2407,15 @@ try:
         print(' '*(60-len('INVALID CHOICE!!')//2),'INVALID CHOICE!!')
         print('*'*120)
         print()
-
 except ValueError:
     print()
     print('*'*120)
     print(' '*(60-len('The choice has to be an intger!!!')//2),'THE CHOICE HAS TO BE AN INTEGER!!!')
     print('*'*120)
     print()
+
 '''
 
 #CALLING FUNCTION
+
 welcome_page()#  <---
