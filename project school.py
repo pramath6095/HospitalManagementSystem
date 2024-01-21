@@ -22,6 +22,7 @@ experience int, status varchar(100))')
 con.commit()
 
 admin_activity=False # to check if admin is entering or user is entering user_interface
+
 #---------------------------------------------------------------------------------------------------------------------------------------------------------
 def reset_bill():
     cur.execute("drop table bill_list")
@@ -127,13 +128,14 @@ def admin_edit():
                         print('*'*120)
 
                         #log report
-                        t = time.localtime()
-                        current_time = time.strftime("%H:%M:%S", t)
+                        t = time.localtime() 
+                        current_time = time.strftime("%H:%M:%S", t) # this is to convert into list format to write inside text file # this is to convert into list format to write inside text file # this is to convert into list format to write inside text file
                         f=open('report.txt','a')
                         temp='['+current_time+'] : '+f"ADMIN CREATED (ID : '{id}', PWD : '{pwd}')"
                         f.write(temp)
                         f.write('\n\n')
                         f.close()
+
                         # log report over
 
 
@@ -171,7 +173,7 @@ def admin_edit():
 
                         #log report
                         t = time.localtime()
-                        current_time = time.strftime("%H:%M:%S", t)
+                        current_time = time.strftime("%H:%M:%S", t) # this is to convert into list format to write inside text file # this is to convert into list format to write inside text file
                         f=open('report.txt','a')
                         temp='['+current_time+'] : '+f"ADMIN DELETED (ID : '{id}')"
                         f.write(temp)
@@ -188,7 +190,7 @@ def admin_edit():
 
                     #log report
                     t = time.localtime()
-                    current_time = time.strftime("%H:%M:%S", t)
+                    current_time = time.strftime("%H:%M:%S", t) # this is to convert into list format to write inside text file # this is to convert into list format to write inside text file
                     f=open('report.txt','a')
                     temp='['+current_time+'] : '+"ADMIN DELETION ATTEMPT"
                     f.write(temp)
@@ -236,7 +238,7 @@ def admin_edit():
 
                     #log report
                     t = time.localtime()
-                    current_time = time.strftime("%H:%M:%S", t)
+                    current_time = time.strftime("%H:%M:%S", t) # this is to convert into list format to write inside text file # this is to convert into list format to write inside text file
                     f=open('report.txt','a')
                     temp='['+current_time+'] : '+f"ADMIN PASSWORD CHANGED (ID : '{id}', PWD : '{pwd}')"
 
@@ -289,7 +291,7 @@ def admin_interface():
             elif ch==2:
                 #log report
                 t = time.localtime()
-                current_time = time.strftime("%H:%M:%S", t)
+                current_time = time.strftime("%H:%M:%S", t) # this is to convert into list format to write inside text file # this is to convert into list format to write inside text file
                 f=open('report.txt','a')
                 temp='['+current_time+'] : '+'DOCTOR EDITING'
                 f.write(temp)
@@ -882,7 +884,7 @@ def admin_interface():
 
                 #log report
                 t = time.localtime()
-                current_time = time.strftime("%H:%M:%S", t)
+                current_time = time.strftime("%H:%M:%S", t) # this is to convert into list format to write inside text file # this is to convert into list format to write inside text file
                 f=open('report.txt','a')
                 temp='['+current_time+'] : '+'LOGOUT'
                 f.write(temp)
@@ -933,7 +935,7 @@ def admin_login():
 
             #log report
             t = time.localtime()
-            current_time = time.strftime("%H:%M:%S", t)
+            current_time = time.strftime("%H:%M:%S", t) # this is to convert into list format to write inside text file
             f=open('report.txt','a')
             f.write('\n\n')
             f.write('-'*50)
@@ -2145,7 +2147,9 @@ def user_interface(id):
                 cur.execute(f"select fname,lname from patient_list where id='{id}'")
                 name=cur.fetchall()
                 name=name[0][0]+'_'+name[0][1]+'_'+id
+
                 print(' '*(60-len(f'Bill has been generated under the file Name "{name}.txt"')//2),f'Bill has been generated under the file Name "{name}.txt"')
+                
                 dt=str(datetime.datetime.now().year)+"-"+str(datetime.datetime.now().month)+"-"+str(datetime.datetime.now().day)+"-"+str(datetime.datetime.now().hour)+"-"+str(datetime.datetime.now().minute)+"-"+str(datetime.datetime.now().second)
                 invoice =str(dt)  # unique invoice code it makes
 
