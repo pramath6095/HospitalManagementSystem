@@ -1998,7 +1998,7 @@ def set_appointment(id):
                     q=f'select fname from patient_list where id="{id}"'
                     cur.execute(q)
                     patient_name=cur.fetchone()
-                    patient_name=patient_name[0][0]
+                    patient_name=patient_name[0]
                     doc_appointment_table_name=doc_id+'_appointment_request'
                     q=f"insert into {doc_appointment_table_name} values('{id}','{patient_name}','{msg}')"
                     cur.execute(q)
